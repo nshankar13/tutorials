@@ -5,7 +5,7 @@ FROM ${base_image}
 ARG TARGETARCH
 ARG TARGETOS
 
-ENV helm_version 3.7.1
+ENV helm_version 3.9.3
 
 RUN echo "I'm building for $TARGETARCH on $TARGETOS"
 
