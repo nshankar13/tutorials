@@ -1,0 +1,29 @@
+trigger:
+  branches:
+    include:
+    - main
+    - release-v*
+
+pr:
+  branches:
+    include:
+    - main
+    - release-v*
+  paths:
+    exclude:
+      - docs/*
+      - conformance/*
+      - tools/*
+      - .github/*
+      - scripts/register-extension-prod.sh
+
+stages:
+- stage: build
+  pool:
+    vmImage: ubuntu-latest # Default agent pool for Azure Pipelines
+  jobs:
+    - job: build_docker_images
+    - bash: |
+        echo "hello"
+      displayName: Echo Hello
+      workingDirectory: $(System.DefaultWorkingDirectory)
