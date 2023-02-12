@@ -23,7 +23,8 @@ stages:
     vmImage: ubuntu-latest # Default agent pool for Azure Pipelines
   jobs:
     - job: build_docker_images
-    - bash: |
-        echo "hello"
-      displayName: Echo Hello
-      workingDirectory: $(System.DefaultWorkingDirectory)
+      steps:
+      - bash: |
+          echo "hello"
+        displayName: Echo Hello
+        workingDirectory: $(System.DefaultWorkingDirectory)
