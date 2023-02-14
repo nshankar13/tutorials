@@ -28,3 +28,10 @@ stages:
           echo "hello"
         displayName: Echo Hello
         workingDirectory: $(System.DefaultWorkingDirectory)
+      - task: DockerInstaller@0
+        inputs:
+          dockerVersion: '17.09.0-ce' # string. Required. Docker Version. Default: 17.09.0-ce.
+      - bash: |
+          docker version
+        displayName: Ensure docker installation succeeded
+    
