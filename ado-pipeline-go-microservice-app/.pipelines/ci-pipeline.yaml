@@ -9,13 +9,6 @@ pr:
     include:
     - main
     - release-v*
-  paths:
-    exclude:
-      - docs/*
-      - conformance/*
-      - tools/*
-      - .github/*
-      - scripts/register-extension-prod.sh
 
 stages:
 - stage: build
