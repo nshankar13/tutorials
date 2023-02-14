@@ -10,6 +10,13 @@ pr:
     - main
     - release-v*
 
+variables:
+  repo.path: $(System.DefaultWorkingDirectory)/osm
+  repo.chart.path: $(repo.path)/charts/$(chart.name)
+  image.artifact.name: drop
+  image.tag: $(checkout.tag)
+  KUBECONFIG: $(System.DefaultWorkingDirectory)/kubeconfig.json
+
 stages:
 - stage: build
   pool:
@@ -28,14 +35,21 @@ stages:
           DOCKER_PASSWORD: $(docker.password)
       - template: ./templates/build-and-push-image.yaml
         parameters:
-          imageRegistry: $(docker.username)
-          imageName: client
-          imageTag: test
-          dockerfilePath: ./ado-pipeline-go-microservice-app/client
+          image_registry: $(docker.username)
+          image_name: client
+          image_tag: test
+          dockerfile_path: ./ado-pipeline-go-microservice-app/client
       - template: ./templates/build-and-push-image.yaml
         parameters:
-          imageRegistry: $(docker.username)
-          imageName: server
-          imageTag: test
-          dockerfilePath: ./ado-pipeline-go-microservice-app/server
-    
+          image_registry: $(docker.username)
+          image_name: server
+          image_tag: test
+          dockerfile_path: ./ado-pipeline-go-microservice-app/server
+      - template: ./templates/install-kind.yaml
+        parameters:
+          kind_version: 0.17.0
+      - template: ./templates/create-kind-cluster.yaml
+        parameters:
+          cluster_name: kind-test
+      - bash: kubectl get pods -A
+        displayName: Get pods

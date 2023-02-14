@@ -1,0 +1,9 @@
+parameters:
+  - name: cluster_name
+    type: string
+    default: ""
+
+steps:
+  - bash: |
+      kind create cluster --name ${{ parameters.cluster_name }}
+    displayName: Create kind cluster
