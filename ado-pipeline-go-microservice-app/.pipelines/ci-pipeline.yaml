@@ -26,4 +26,10 @@ stages:
         displayName: Login to docker registry.
         env:
           DOCKER_PASSWORD: $(docker.password)
+      - template: ./templates/build-and-push-image.yaml
+        parameters:
+          imageRegistry: $(docker.username)
+          imageName: client
+          imageTag: test
+          dockerfilePath: ./client
     

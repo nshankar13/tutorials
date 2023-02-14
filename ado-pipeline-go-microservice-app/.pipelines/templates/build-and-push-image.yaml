@@ -1,0 +1,17 @@
+parameters:
+  - name: imageRegistry
+    type: string
+  - name: imageName
+    type: string
+  - name: imageTag
+    type: string
+    default: latest
+  - name: dockerfilePath
+    type: string
+
+steps:
+  - bash: |
+      docker build -t ${{ parameters.imageRegistry }}/${{ parameters.imageName }}:${{ parameters.imageTag }} .
+      docker push ${{ parameters.imageRegistry }}/${{ parameters.imageName }}:${{ parameters.imageTag }}
+    displayName: Build and push docker image ${{ parameters.imageName }} to ${{ parameters.imageRegistry }}
+    workingDirectory: ${{ parameters.dockerfilePath }}
