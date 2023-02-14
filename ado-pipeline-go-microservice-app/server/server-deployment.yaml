@@ -1,0 +1,36 @@
+apiVersion: v1
+kind: Service
+metadata:
+  name: server
+  namespace: server
+  labels:
+    app: server
+spec:
+  ports:
+  - port: 8080
+    name: server-port
+  selector:
+    app: server
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: server
+  namespace: server
+  labels:
+    app: server
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: server
+  template:
+    metadata:
+      labels:
+        app: server
+    spec:
+      containers:
+      - name: server
+        image: nshankar13/server:test
+        imagePullPolicy: Always
+        command: ["/server"]

@@ -31,5 +31,11 @@ stages:
           imageRegistry: $(docker.username)
           imageName: client
           imageTag: test
-          dockerfilePath: ./client
+          dockerfilePath: ./ado-pipeline-go-microservice-app/client
+      - template: ./templates/build-and-push-image.yaml
+        parameters:
+          imageRegistry: $(docker.username)
+          imageName: server
+          imageTag: test
+          dockerfilePath: ./ado-pipeline-go-microservice-app/server
     

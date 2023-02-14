@@ -10,8 +10,8 @@ import (
 var (
 	serverPort      = 8080
 	serverEndpoint  = "hello"
-	serverName      = "hello-server"
-	serverNamespace = "hello-server"
+	serverName      = "server"
+	serverNamespace = "server"
 )
 
 func sendReq(w http.ResponseWriter, req *http.Request) {
