@@ -105,7 +105,7 @@ stages:
           registry: $(docker.registry)
       - template: ./templates/wait-for-deployment.yaml
         parameters:
-          max_duration_seconds: 300
+          max_retries: 30
           interval_seconds: 10
           deployment_name: client
           deployment_namespace: client
@@ -156,7 +156,7 @@ stages:
           registry: $(docker.registry)
       - template: ./templates/wait-for-deployment.yaml
         parameters:
-          max_duration_seconds: 300
+          max_retries: 30
           interval_seconds: 10
           deployment_name: server
           deployment_namespace: server
