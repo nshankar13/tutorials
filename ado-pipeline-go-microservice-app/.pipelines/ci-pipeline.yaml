@@ -43,13 +43,13 @@ stages:
         displayName: Set IMAGE_TAG based on git commit
       - template: ./templates/build-and-push-image.yaml
         parameters:
-          image_registry: $(docker.username)
+          image_registry: $(docker.registry)
           image_name: $(client.image.name)
           image_tag: $(client.image.tag)
           dockerfile_path: ./ado-pipeline-go-microservice-app/client
       - template: ./templates/build-and-push-image.yaml
         parameters:
-          image_registry: $(docker.username)
+          image_registry: $(docker.registry)
           image_name: $(server.image.name)
           image_tag: $(server.image.tag)
           dockerfile_path: ./ado-pipeline-go-microservice-app/server
