@@ -33,10 +33,14 @@ stages:
           kind_version: 0.17.0
       - bash: docker version
         displayName: Ensure docker installation succeeded
-      - bash: docker login -u $(docker.username) -p "$DOCKER_PASSWORD"
-        displayName: Login to docker registry.
+      - bash: docker login -u $(docker.registry) -p "$DOCKER_PASSWORD"
+        displayName: Login to docker registry
         env:
           DOCKER_PASSWORD: $(docker.password)
+      - bash: |
+          echo "##vso[task.setvariable variable=IMAGE_TAG]$(git rev-parse --short HEAD)"
+          echo $IMAGE_TAG
+        displayName: Set IMAGE_TAG based on git commit
       - template: ./templates/build-and-push-image.yaml
         parameters:
           image_registry: $(docker.username)
@@ -63,7 +67,7 @@ stages:
         parameters:
           cluster_name: kind-test
       - bash: kubectl get pods -A
-        displayName: Get pods.
+        displayName: Get pods
       - bash: |
           kubectl create ns client
           kubectl apply -f - <<EOF
@@ -86,15 +90,21 @@ stages:
               spec:
                 containers:
                 - name: client
-                  image: nshankar13/client:test-2
+                  image: $registry/$client_image_name:$client_image_tag
                   imagePullPolicy: Always
                   command: ["/client"]
           EOF
-        displayName: Create client deployment.
+        displayName: Create client deployment
         env:
           client_image_name: $(client.image.name)
           client_image_tag: $(client.image.tag)
-          registry: $(docker.username)
+          registry: $(docker.registry)
+      - template: ./templates/wait-for-deployment.yaml
+        parameters:
+          max_duration_seconds: 300
+          interval_seconds: 10
+          deployment_name: client
+          deployment_namespace: client
       - bash: |
           kubectl create ns server
           kubectl apply -f - <<EOF
@@ -131,13 +141,23 @@ stages:
               spec:
                 containers:
                 - name: server
-                  image: nshankar13/server:test
+                  image: $registry/$server_image_name:$server_image_tag
                   imagePullPolicy: Always
                   command: ["/server"]
           EOF
         displayName: Create server deployment
+        env:
+          server_image_name: $(server.image.name)
+          server_image_tag: $(server.image.tag)
+          registry: $(docker.registry)
+      - template: ./templates/wait-for-deployment.yaml
+        parameters:
+          max_duration_seconds: 300
+          interval_seconds: 10
+          deployment_name: server
+          deployment_namespace: server
       - bash: kubectl get pods -A
-        displayName: Get pods. 
+        displayName: Get pods
 
 ## Publish stage that only gets enabled / triggered for release job? 
 
