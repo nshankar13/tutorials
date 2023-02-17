@@ -45,13 +45,13 @@ stages:
         parameters:
           image_registry: $(docker.registry)
           image_name: $(client.image.name)
-          image_tag: $(client.image.tag)
+          image_tag: $IMAGE_TAG
           dockerfile_path: ./ado-pipeline-go-microservice-app/client
       - template: ./templates/build-and-push-image.yaml
         parameters:
           image_registry: $(docker.registry)
           image_name: $(server.image.name)
-          image_tag: $(server.image.tag)
+          image_tag: $IMAGE_TAG
           dockerfile_path: ./ado-pipeline-go-microservice-app/server
       - template: ./templates/create-kind-cluster.yaml
         parameters:
@@ -66,6 +66,10 @@ stages:
       - template: ./templates/create-kind-cluster.yaml
         parameters:
           cluster_name: kind-test
+      - bash: |
+          echo "##vso[task.setvariable variable=IMAGE_TAG]$(git rev-parse --short HEAD)"
+          echo $IMAGE_TAG
+        displayName: Set IMAGE_TAG based on git commit
       - bash: kubectl get pods -A
         displayName: Get pods
       - bash: |
@@ -97,7 +101,7 @@ stages:
         displayName: Create client deployment
         env:
           client_image_name: $(client.image.name)
-          client_image_tag: $(client.image.tag)
+          client_image_tag: $IMAGE_TAG
           registry: $(docker.registry)
       - template: ./templates/wait-for-deployment.yaml
         parameters:
@@ -148,7 +152,7 @@ stages:
         displayName: Create server deployment
         env:
           server_image_name: $(server.image.name)
-          server_image_tag: $(server.image.tag)
+          server_image_tag: $IMAGE_TAG
           registry: $(docker.registry)
       - template: ./templates/wait-for-deployment.yaml
         parameters:
