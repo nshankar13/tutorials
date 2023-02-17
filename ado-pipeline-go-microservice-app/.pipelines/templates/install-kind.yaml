@@ -9,4 +9,4 @@ steps:
       chmod +x ./kind
       sudo mv ./kind /usr/local/bin/kind
       kind --version
-    displayName: Install kind v${{ parameters.kind_version }}
+    displayName: Install kind v${{ parameters.kind_version }}.

@@ -6,4 +6,4 @@ parameters:
 steps:
   - bash: |
       curl -LO https://dl.k8s.io/release/v${{ parameters.kubectl_version }}/bin/linux/amd64/kubectl
-    displayName: Install kubectl v${{ parameters.kubectl_version }}
+    displayName: Install kubectl v${{ parameters.kubectl_version }}.

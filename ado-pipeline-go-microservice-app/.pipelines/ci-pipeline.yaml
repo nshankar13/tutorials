@@ -11,11 +11,12 @@ pr:
     - release-v*
 
 variables:
-  repo.path: $(System.DefaultWorkingDirectory)/osm
-  repo.chart.path: $(repo.path)/charts/$(chart.name)
-  image.artifact.name: drop
-  image.tag: $(checkout.tag)
   KUBECONFIG: $(System.DefaultWorkingDirectory)/kubeconfig.json
+  # Or set these as UI Variables?
+  client.image.name: client
+  client.image.tag: test
+  server.image.name: server
+  server.image.tag: test
 
 stages:
 - stage: build
@@ -27,6 +28,9 @@ stages:
       - task: DockerInstaller@0
         inputs:
           dockerVersion: '17.09.0-ce' # string. Required. Docker Version. Default: 17.09.0-ce.
+      - template: ./templates/install-kind.yaml
+        parameters:
+          kind_version: 0.17.0
       - bash: docker version
         displayName: Ensure docker installation succeeded
       - bash: docker login -u $(docker.username) -p "$DOCKER_PASSWORD"
@@ -36,20 +40,109 @@ stages:
       - template: ./templates/build-and-push-image.yaml
         parameters:
           image_registry: $(docker.username)
-          image_name: client
-          image_tag: test
+          image_name: $(client.image.name)
+          image_tag: $(client.image.tag)
           dockerfile_path: ./ado-pipeline-go-microservice-app/client
       - template: ./templates/build-and-push-image.yaml
         parameters:
           image_registry: $(docker.username)
-          image_name: server
-          image_tag: test
+          image_name: $(server.image.name)
+          image_tag: $(server.image.tag)
           dockerfile_path: ./ado-pipeline-go-microservice-app/server
-      - template: ./templates/install-kind.yaml
+      - template: ./templates/create-kind-cluster.yaml
         parameters:
-          kind_version: 0.17.0
+          cluster_name: kind-test
+
+stages:
+- stage: test
+  pool:
+    vmImage: ubuntu-latest # Default agent pool for Azure Pipelines
+  jobs:
+    - job: test_microservice_app
+      steps:
       - template: ./templates/create-kind-cluster.yaml
         parameters:
           cluster_name: kind-test
       - bash: kubectl get pods -A
-        displayName: Get pods
+        displayName: Get pods.
+      - bash: |
+          kubectl create ns client
+          kubectl apply -f - <<EOF
+          apiVersion: apps/v1
+          kind: Deployment
+          metadata:
+            name: client
+            namespace: client
+            labels:
+              app: client
+          spec:
+            replicas: 1
+            selector:
+              matchLabels:
+                app: client
+            template:
+              metadata:
+                labels:
+                  app: client
+              spec:
+                containers:
+                - name: client
+                  image: nshankar13/client:test-2
+                  imagePullPolicy: Always
+                  command: ["/client"]
+          EOF
+        displayName: Create client deployment.
+        env:
+          client_image_name: $(client.image.name)
+          client_image_tag: $(client.image.tag)
+          registry: $(docker.username)
+      - bash: |
+          kubectl create ns server
+          kubectl apply -f - <<EOF
+          apiVersion: v1
+          kind: Service
+          metadata:
+            name: server
+            namespace: server
+            labels:
+              app: server
+          spec:
+            ports:
+            - port: 8080
+              name: server-port
+            selector:
+              app: server
+          ---
+          apiVersion: apps/v1
+          kind: Deployment
+          metadata:
+            name: server
+            namespace: server
+            labels:
+              app: server
+          spec:
+            replicas: 1
+            selector:
+              matchLabels:
+                app: server
+            template:
+              metadata:
+                labels:
+                  app: server
+              spec:
+                containers:
+                - name: server
+                  image: nshankar13/server:test
+                  imagePullPolicy: Always
+                  command: ["/server"]
+          EOF
+        displayName: Create server deployment
+      - bash: kubectl get pods -A
+        displayName: Get pods. 
+
+
+
+## Publish stage that only gets enabled 
+
+# Push to staging registry (or as test tag) before publishing to official registry?
+# Or distinguish between CI and release Pipeline? 

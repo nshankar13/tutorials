@@ -6,4 +6,4 @@ parameters:
 steps:
   - bash: |
       kind create cluster --name ${{ parameters.cluster_name }}
-    displayName: Create kind cluster
+    displayName: Create kind cluster.
