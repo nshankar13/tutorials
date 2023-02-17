@@ -21,6 +21,7 @@ steps:
         i=$((i+1))
         echo "waiting for deployment ${{ parameters.deployment_name }} in namespace ${{ parameters.deployment_namespace }} to become available"
         kubectl get pods -A
+        kubectl get pod client -n client -o yaml
         sleep ${{ parameters.interval_seconds }}
       done
       echo "deployment ${{ parameters.deployment_name }} in namespace ${{ parameters.deployment_namespace }} is available"
