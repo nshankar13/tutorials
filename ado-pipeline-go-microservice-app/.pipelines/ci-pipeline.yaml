@@ -170,9 +170,10 @@ stages:
           client_pod_label: $(client.image.name)
       - bash: |
           server_logs=$(kubectl logs $(kubectl get pod -l app=$server_pod_label -n $server_pod_label -o jsonpath='{.items[0].metadata.name}') -n $server_pod_label)
-          if [[ "$(echo $server_logs | head -c 5)" != "Hello" ]]; then
-            echo "Server logs don't have 'Hello'" && exit 1
+          if [[ "$(echo $server_logs | head -c 5)" != "hello" ]]; then
+            echo "Server logs don't have 'hello'" && exit 1
           fi
+        displayName: Verify server pod logs
         env:
           server_pod_label: $(server.image.name)
       - bash: |
