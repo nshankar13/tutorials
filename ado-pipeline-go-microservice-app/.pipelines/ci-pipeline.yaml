@@ -144,7 +144,7 @@ stages:
         displayName: Create server deployment
         env:
           server_image_name: $(server.image.name)
-          server_image_tag: $IMAGE_TAG
+          server_image_tag: $(IMAGE_TAG)
           registry: $(docker.registry)
       - template: ./templates/wait-for-deployment.yaml
         parameters:

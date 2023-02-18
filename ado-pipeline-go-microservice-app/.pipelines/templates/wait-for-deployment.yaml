@@ -20,9 +20,6 @@ steps:
         fi
         i=$((i+1))
         echo "waiting for deployment ${{ parameters.deployment_name }} in namespace ${{ parameters.deployment_namespace }} to become available"
-        kubectl get pods -A
-        export client_name=$(kubectl get pods -n client --selector app=client --no-headers | awk '{print $1}' | head -n1)
-        kubectl get pod $client_name -n client -o yaml
         sleep ${{ parameters.interval_seconds }}
       done
       echo "deployment ${{ parameters.deployment_name }} in namespace ${{ parameters.deployment_namespace }} is available"
