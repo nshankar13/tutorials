@@ -8,15 +8,10 @@ pr:
   branches:
     include:
     - main
-    - release-v*
+    - release-v* # want this to be release-v* or v*?
 
 variables:
   KUBECONFIG: $(System.DefaultWorkingDirectory)/kubeconfig.json
-  # Or set these as UI Variables?
-  client.image.name: client
-  client.image.tag: test
-  server.image.name: server
-  server.image.tag: test
 
 stages:
 - stage: build
@@ -51,7 +46,7 @@ stages:
         parameters:
           image_registry: $(docker.registry)
           image_name: $(server.image.name)
-          image_tag: $IMAGE_TAG
+          image_tag: $(IMAGE_TAG)
           dockerfile_path: ./ado-pipeline-go-microservice-app/server
 
 - stage: test
@@ -70,27 +65,27 @@ stages:
       - bash: kubectl get pods -A
         displayName: Get pods
       - bash: |
-          kubectl create ns client
+          kubectl create ns $client_image_name
           kubectl apply -f - <<EOF
           apiVersion: apps/v1
           kind: Deployment
           metadata:
-            name: client
-            namespace: client
+            name: $client_image_name
+            namespace: $client_image_name
             labels:
-              app: client
+              app: $client_image_name
           spec:
             replicas: 1
             selector:
               matchLabels:
-                app: client
+                app: $client_image_name
             template:
               metadata:
                 labels:
-                  app: client
+                  app: $client_image_name
               spec:
                 containers:
-                - name: client
+                - name: $client_image_name
                   image: $registry/$client_image_name:$client_image_tag
                   imagePullPolicy: Always
                   command: ["/client"]
@@ -98,7 +93,7 @@ stages:
         displayName: Create client deployment
         env:
           client_image_name: $(client.image.name)
-          client_image_tag: $IMAGE_TAG
+          client_image_tag: $(IMAGE_TAG)
           registry: $(docker.registry)
       - template: ./templates/wait-for-deployment.yaml
         parameters:
@@ -107,41 +102,41 @@ stages:
           deployment_name: client
           deployment_namespace: client
       - bash: |
-          kubectl create ns server
+          kubectl create ns $server_image_name
           kubectl apply -f - <<EOF
           apiVersion: v1
           kind: Service
           metadata:
-            name: server
-            namespace: server
+            name: $server_image_name
+            namespace: $server_image_name
             labels:
-              app: server
+              app: $server_image_name
           spec:
             ports:
             - port: 8080
               name: server-port
             selector:
-              app: server
+              app: $server_image_name
           ---
           apiVersion: apps/v1
           kind: Deployment
           metadata:
-            name: server
-            namespace: server
+            name: $server_image_name
+            namespace: $server_image_name
             labels:
-              app: server
+              app: $server_image_name
           spec:
             replicas: 1
             selector:
               matchLabels:
-                app: server
+                app: $server_image_name
             template:
               metadata:
                 labels:
-                  app: server
+                  app: $server_image_name
               spec:
                 containers:
-                - name: server
+                - name: $server_image_name
                   image: $registry/$server_image_name:$server_image_tag
                   imagePullPolicy: Always
                   command: ["/server"]
@@ -157,8 +152,37 @@ stages:
           interval_seconds: 10
           deployment_name: server
           deployment_namespace: server
-      - bash: kubectl get pods -A
-        displayName: Get pods
+      - bash: |
+          resp=$(kubectl exec "$(kubectl get pod -l app=$client_pod_label -n $client_pod_label -o jsonpath='{.items[0].metadata.name}')" -n $client_pod_label -- curl --write-out '%{http_code}' http://localhost:8080/send-req --silent --output /dev/null)
+          if [[ "$resp" != "200" ]]; then
+            echo "curl request from client to server didn't return response code 200" && exit 1
+          fi
+        displayName: Test curl against client pod
+        env:
+          client_pod_label: $(client.image.name)
+      - bash: |
+          client_logs=$(kubectl logs $(kubectl get pod -l app=$client_pod_label -n $client_pod_label -o jsonpath='{.items[0].metadata.name}') -n $client_pod_label)
+          if [[ "$(echo $client_logs | head -c 19)" != "Response Successful" ]]; then
+            echo "Client logs don't have 'Response Successful'" && exit 1
+          fi
+        displayName: Verify client pod logs
+        env:
+          client_pod_label: $(client.image.name)
+      - bash: |
+          server_logs=$(kubectl logs $(kubectl get pod -l app=$server_pod_label -n $server_pod_label -o jsonpath='{.items[0].metadata.name}') -n $server_pod_label)
+          if [[ "$(echo $server_logs | head -c 5)" != "Hello" ]]; then
+            echo "Server logs don't have 'Hello'" && exit 1
+          fi
+        env:
+          server_pod_label: $(server.image.name)
+      - bash: |
+          kind delete cluster --name kind-test
+        displayName: Delete kind cluster
+        condition: always() # We want to delete the kind cluster regardless if the tests pass or fail. 
+
+
+## Delete kind cluster once tests pass
+
 
 ## Publish stage that only gets enabled / triggered for release job? 
 
