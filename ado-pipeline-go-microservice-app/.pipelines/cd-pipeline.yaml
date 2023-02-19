@@ -28,7 +28,7 @@ stages:
       - bash: |
           echo "##vso[task.setvariable variable=IMAGE_TAG]variables['build.sourceBranchName']"
           echo $IMAGE_TAG
-        displayName: Set IMAGE_TAG based on git commit
+        displayName: Set IMAGE_TAG based on branch name
       - template: ./templates/build-and-push-image.yaml
         parameters:
           image_registry: $(staging.registry)
@@ -54,7 +54,7 @@ stages:
       - bash: |
           echo "##vso[task.setvariable variable=IMAGE_TAG]variables['build.sourceBranchName']"
           echo $IMAGE_TAG
-        displayName: Set IMAGE_TAG based on git commit
+        displayName: Set IMAGE_TAG based on branch name
       - bash: kubectl get pods -A
         displayName: Get pods
       - bash: |
