@@ -26,7 +26,7 @@ stages:
         env:
           DOCKER_PASSWORD: $(staging.registry.password)
       - bash: |
-          echo "##vso[task.setvariable variable=IMAGE_TAG]$(git rev-parse --short HEAD)"
+          echo "##vso[task.setvariable variable=IMAGE_TAG]variables['build.sourceBranchName']"
           echo $IMAGE_TAG
         displayName: Set IMAGE_TAG based on git commit
       - template: ./templates/build-and-push-image.yaml
@@ -52,7 +52,7 @@ stages:
         parameters:
           cluster_name: kind-test
       - bash: |
-          echo "##vso[task.setvariable variable=IMAGE_TAG]$(git rev-parse --short HEAD)"
+          echo "##vso[task.setvariable variable=IMAGE_TAG]variables['build.sourceBranchName']"
           echo $IMAGE_TAG
         displayName: Set IMAGE_TAG based on git commit
       - bash: kubectl get pods -A
