@@ -1,12 +1,7 @@
 trigger:
   branches:
     include:
-    - main
-
-pr:
-  branches:
-    include:
-    - main
+    - v*
 
 variables:
   KUBECONFIG: $(System.DefaultWorkingDirectory)/kubeconfig.json
@@ -46,10 +41,6 @@ stages:
           image_name: $(server.image.name)
           image_tag: $(IMAGE_TAG)
           dockerfile_path: ./ado-pipeline-go-microservice-app/server
-      - task: PublishBuildArtifacts@1
-        inputs:
-          pathToPublish: '$(Build.ArtifactStagingDirectory)'
-          artifactName: drop1
 
 - stage: test
   pool:
