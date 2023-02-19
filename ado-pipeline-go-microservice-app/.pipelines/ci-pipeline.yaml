@@ -2,11 +2,21 @@ trigger:
   branches:
     include:
     - main
+  paths:
+    exclude: 
+    - .pipelines/cd-pipeline.yaml
+    - docs/*
 
 pr:
   branches:
     include:
     - main
+    - release-v*
+    - v*
+  paths:
+    exclude: 
+    - .pipelines/cd-pipeline.yaml
+    - docs/*
 
 variables:
   KUBECONFIG: $(System.DefaultWorkingDirectory)/kubeconfig.json
@@ -26,23 +36,23 @@ stages:
           kind_version: 0.17.0
       - bash: docker version
         displayName: Ensure docker installation succeeded
-      - bash: docker login -u $(docker.registry) -p "$DOCKER_PASSWORD"
+      - bash: docker login -u $(staging.registry) -p "$DOCKER_PASSWORD"
         displayName: Login to docker registry
         env:
-          DOCKER_PASSWORD: $(docker.password)
+          DOCKER_PASSWORD: $(staging.registry.password)
       - bash: |
           echo "##vso[task.setvariable variable=IMAGE_TAG]$(git rev-parse --short HEAD)"
           echo $IMAGE_TAG
         displayName: Set IMAGE_TAG based on git commit
       - template: ./templates/build-and-push-image.yaml
         parameters:
-          image_registry: $(docker.registry)
+          image_registry: $(staging.registry)
           image_name: $(client.image.name)
           image_tag: $IMAGE_TAG
           dockerfile_path: ./ado-pipeline-go-microservice-app/client
       - template: ./templates/build-and-push-image.yaml
         parameters:
-          image_registry: $(docker.registry)
+          image_registry: $(staging.registry)
           image_name: $(server.image.name)
           image_tag: $(IMAGE_TAG)
           dockerfile_path: ./ado-pipeline-go-microservice-app/server
@@ -96,7 +106,7 @@ stages:
         env:
           client_image_name: $(client.image.name)
           client_image_tag: $(IMAGE_TAG)
-          registry: $(docker.registry)
+          registry: $(staging.registry)
       - template: ./templates/wait-for-deployment.yaml
         parameters:
           max_retries: 30
@@ -147,7 +157,7 @@ stages:
         env:
           server_image_name: $(server.image.name)
           server_image_tag: $(IMAGE_TAG)
-          registry: $(docker.registry)
+          registry: $(staging.registry)
       - template: ./templates/wait-for-deployment.yaml
         parameters:
           max_retries: 30

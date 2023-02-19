@@ -31,6 +31,6 @@ spec:
     spec:
       containers:
       - name: server
-        image: nshankar13/server:test
+        image: nshankar13/server:v1.0.0
         imagePullPolicy: Always
         command: ["/server"]
