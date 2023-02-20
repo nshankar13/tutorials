@@ -161,7 +161,7 @@ stages:
         displayName: Delete kind cluster
         condition: always() # We want to delete the kind cluster regardless if the tests pass or fail. 
 
-
+  - stage: publish
 ## Delete kind cluster once tests pass
 
 
