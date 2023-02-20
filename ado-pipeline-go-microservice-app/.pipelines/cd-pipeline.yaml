@@ -2,6 +2,9 @@ trigger:
   branches:
     include:
     - v*
+  paths:
+    exclude: 
+    - docs/*
 
 variables:
   KUBECONFIG: $(System.DefaultWorkingDirectory)/kubeconfig.json
@@ -161,9 +164,11 @@ stages:
         displayName: Delete kind cluster
         condition: always() # We want to delete the kind cluster regardless if the tests pass or fail. 
 
-  - stage: publish
-    pool:
-      vmImage: ubuntu-latest # Default agent pool for Azure Pipelines
+  # - stage: publish
+  #   pool:
+  #     vmImage: ubuntu-latest # Default agent pool for Azure Pipelines
+  #   jobs:
+
 ## Delete kind cluster once tests pass
 
 
