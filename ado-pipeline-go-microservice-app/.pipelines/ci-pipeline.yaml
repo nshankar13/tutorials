@@ -12,6 +12,7 @@ pr:
 
 variables:
   KUBECONFIG: $(System.DefaultWorkingDirectory)/kubeconfig.json
+  artifact.name: drop1
 
 stages:
 - stage: build
@@ -51,7 +52,7 @@ stages:
       - task: PublishBuildArtifacts@1
         inputs:
           pathToPublish: '$(Build.ArtifactStagingDirectory)'
-          artifactName: drop1
+          artifactName: $(artifact.name)
 
 - stage: test
   pool:
