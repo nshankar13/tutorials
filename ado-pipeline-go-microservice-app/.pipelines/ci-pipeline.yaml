@@ -4,7 +4,7 @@ trigger:
     - main
   paths:
     exclude: 
-    - ado-pipeline-go-microservice-app/.pipelines/cd-pipeline.yaml
+    - ./ado-pipeline-go-microservice-app/.pipelines/cd-pipeline.yaml
     - docs/*
 
 pr:
