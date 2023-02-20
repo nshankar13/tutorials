@@ -169,7 +169,7 @@ stages:
   pool:
     vmImage: ubuntu-latest # Default agent pool for Azure Pipelines
   jobs:
-  - job: build_docker_images
+    - job: build_docker_images
       steps:
       - task: DockerInstaller@0
         inputs:
