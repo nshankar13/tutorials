@@ -51,124 +51,124 @@ stages:
           pathToPublish: '$(Build.ArtifactStagingDirectory)'
           artifactName: $(artifact.name)
 
-# - stage: test
-#   pool:
-#     vmImage: ubuntu-latest # Default agent pool for Azure Pipelines
-#   jobs:
-#     - job: test_microservice_app
-#       steps:
-#       - template: ./templates/create-kind-cluster.yaml
-#         parameters:
-#           cluster_name: kind-test
-#       - bash: |
-#           echo "##vso[task.setvariable variable=IMAGE_TAG]$(Build.SourceBranchName)"
-#           echo $IMAGE_TAG
-#         displayName: Set IMAGE_TAG based on branch name
-#       - bash: kubectl get pods -A
-#         displayName: Get pods
-#       - bash: |
-#           kubectl create ns $client_image_name
-#           kubectl apply -f - <<EOF
-#           apiVersion: apps/v1
-#           kind: Deployment
-#           metadata:
-#             name: $client_image_name
-#             namespace: $client_image_name
-#             labels:
-#               app: $client_image_name
-#           spec:
-#             replicas: 1
-#             selector:
-#               matchLabels:
-#                 app: $client_image_name
-#             template:
-#               metadata:
-#                 labels:
-#                   app: $client_image_name
-#               spec:
-#                 containers:
-#                 - name: $client_image_name
-#                   image: $registry/$client_image_name:$client_image_tag
-#                   imagePullPolicy: Always
-#                   command: ["/client"]
-#           EOF
-#         displayName: Create client deployment
-#         env:
-#           client_image_name: $(client.image.name)
-#           client_image_tag: $(IMAGE_TAG)
-#           registry: $(staging.registry)
-#       - template: ./templates/wait-for-deployment.yaml
-#         parameters:
-#           max_retries: 30
-#           interval_seconds: 10
-#           deployment_name: $(client.image.name)
-#           deployment_namespace: $(client.image.name)
-#       - bash: |
-#           kubectl create ns $server_image_name
-#           kubectl apply -f - <<EOF
-#           apiVersion: v1
-#           kind: Service
-#           metadata:
-#             name: $server_image_name
-#             namespace: $server_image_name
-#             labels:
-#               app: $server_image_name
-#           spec:
-#             ports:
-#             - port: 8080
-#               name: server-port
-#             selector:
-#               app: $server_image_name
-#           ---
-#           apiVersion: apps/v1
-#           kind: Deployment
-#           metadata:
-#             name: $server_image_name
-#             namespace: $server_image_name
-#             labels:
-#               app: $server_image_name
-#           spec:
-#             replicas: 1
-#             selector:
-#               matchLabels:
-#                 app: $server_image_name
-#             template:
-#               metadata:
-#                 labels:
-#                   app: $server_image_name
-#               spec:
-#                 containers:
-#                 - name: $server_image_name
-#                   image: $registry/$server_image_name:$server_image_tag
-#                   imagePullPolicy: Always
-#                   command: ["/server"]
-#           EOF
-#         displayName: Create server deployment
-#         env:
-#           server_image_name: $(server.image.name)
-#           server_image_tag: $(IMAGE_TAG)
-#           registry: $(staging.registry)
-#       - template: ./templates/wait-for-deployment.yaml
-#         parameters:
-#           max_retries: 30
-#           interval_seconds: 10
-#           deployment_name: $(server.image.name)
-#           deployment_namespace: $(server.image.name)
-#       - bash: |
-#           resp=$(kubectl exec "$(kubectl get pod -l app=$client_pod_label -n $client_pod_label -o jsonpath='{.items[0].metadata.name}')" -n $client_pod_label -- curl --write-out '%{http_code}' http://$server_name.$server_name.svc.cluster.local:$server_port/$server_endpoint --silent --output /dev/null)
-#           if [[ "$resp" != "200" ]]; then
-#             echo "curl request from client to server didn't return response code 200" && exit 1
-#           fi
-#         displayName: Test curl request from client to server
-#         env:
-#           client_pod_label: $(client.image.name)
-#           server_name: $(server.image.name)
-#           server_port: $(server.port)
-#           server_endpoint: $(server.endpoint)
-#       - bash: |
-#           kind delete cluster --name kind-test
-#         displayName: Delete kind cluster
-#         condition: always() # We want to delete the kind cluster regardless if the tests pass or fail. 
+- stage: test
+  pool:
+    vmImage: ubuntu-latest # Default agent pool for Azure Pipelines
+  jobs:
+    - job: test_microservice_app
+      steps:
+      - template: ./templates/create-kind-cluster.yaml
+        parameters:
+          cluster_name: kind-test
+      - bash: |
+          echo "##vso[task.setvariable variable=IMAGE_TAG]$(Build.SourceBranchName)"
+          echo $IMAGE_TAG
+        displayName: Set IMAGE_TAG based on branch name
+      - bash: kubectl get pods -A
+        displayName: Get pods
+      - bash: |
+          kubectl create ns $client_image_name
+          kubectl apply -f - <<EOF
+          apiVersion: apps/v1
+          kind: Deployment
+          metadata:
+            name: $client_image_name
+            namespace: $client_image_name
+            labels:
+              app: $client_image_name
+          spec:
+            replicas: 1
+            selector:
+              matchLabels:
+                app: $client_image_name
+            template:
+              metadata:
+                labels:
+                  app: $client_image_name
+              spec:
+                containers:
+                - name: $client_image_name
+                  image: $registry/$client_image_name:$client_image_tag
+                  imagePullPolicy: Always
+                  command: ["/client"]
+          EOF
+        displayName: Create client deployment
+        env:
+          client_image_name: $(client.image.name)
+          client_image_tag: $(IMAGE_TAG)
+          registry: $(staging.registry)
+      - template: ./templates/wait-for-deployment.yaml
+        parameters:
+          max_retries: 30
+          interval_seconds: 10
+          deployment_name: $(client.image.name)
+          deployment_namespace: $(client.image.name)
+      - bash: |
+          kubectl create ns $server_image_name
+          kubectl apply -f - <<EOF
+          apiVersion: v1
+          kind: Service
+          metadata:
+            name: $server_image_name
+            namespace: $server_image_name
+            labels:
+              app: $server_image_name
+          spec:
+            ports:
+            - port: 8080
+              name: server-port
+            selector:
+              app: $server_image_name
+          ---
+          apiVersion: apps/v1
+          kind: Deployment
+          metadata:
+            name: $server_image_name
+            namespace: $server_image_name
+            labels:
+              app: $server_image_name
+          spec:
+            replicas: 1
+            selector:
+              matchLabels:
+                app: $server_image_name
+            template:
+              metadata:
+                labels:
+                  app: $server_image_name
+              spec:
+                containers:
+                - name: $server_image_name
+                  image: $registry/$server_image_name:$server_image_tag
+                  imagePullPolicy: Always
+                  command: ["/server"]
+          EOF
+        displayName: Create server deployment
+        env:
+          server_image_name: $(server.image.name)
+          server_image_tag: $(IMAGE_TAG)
+          registry: $(staging.registry)
+      - template: ./templates/wait-for-deployment.yaml
+        parameters:
+          max_retries: 30
+          interval_seconds: 10
+          deployment_name: $(server.image.name)
+          deployment_namespace: $(server.image.name)
+      - bash: |
+          resp=$(kubectl exec "$(kubectl get pod -l app=$client_pod_label -n $client_pod_label -o jsonpath='{.items[0].metadata.name}')" -n $client_pod_label -- curl --write-out '%{http_code}' http://$server_name.$server_name.svc.cluster.local:$server_port/$server_endpoint --silent --output /dev/null)
+          if [[ "$resp" != "200" ]]; then
+            echo "curl request from client to server didn't return response code 200" && exit 1
+          fi
+        displayName: Test curl request from client to server
+        env:
+          client_pod_label: $(client.image.name)
+          server_name: $(server.image.name)
+          server_port: $(server.port)
+          server_endpoint: $(server.endpoint)
+      - bash: |
+          kind delete cluster --name kind-test
+        displayName: Delete kind cluster
+        condition: always() # We want to delete the kind cluster regardless if the tests pass or fail. 
 
 - stage: publish
   pool:
