@@ -30,7 +30,7 @@ stages:
         env:
           DOCKER_PASSWORD: $(staging.registry.password)
       - bash: |
-          echo "##vso[task.setvariable variable=IMAGE_TAG]$(Build.SourceBranchName)
+          echo "##vso[task.setvariable variable=IMAGE_TAG]$(Build.SourceBranchName)"
           echo $IMAGE_TAG
         displayName: Set IMAGE_TAG based on branch name
       - template: ./templates/build-and-push-image.yaml
@@ -165,10 +165,10 @@ stages:
         displayName: Delete kind cluster
         condition: always() # We want to delete the kind cluster regardless if the tests pass or fail. 
 
-  #  - stage: publish
-  #   pool:
-  #     vmImage: ubuntu-latest # Default agent pool for Azure Pipelines
-  #   jobs:
+- stage: publish
+  pool:
+    vmImage: ubuntu-latest # Default agent pool for Azure Pipelines
+  jobs:
 
 ## Delete kind cluster once tests pass
 
