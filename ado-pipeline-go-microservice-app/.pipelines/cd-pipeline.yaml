@@ -162,6 +162,8 @@ stages:
         condition: always() # We want to delete the kind cluster regardless if the tests pass or fail. 
 
   - stage: publish
+    pool:
+      vmImage: ubuntu-latest # Default agent pool for Azure Pipelines
 ## Delete kind cluster once tests pass
 
 
