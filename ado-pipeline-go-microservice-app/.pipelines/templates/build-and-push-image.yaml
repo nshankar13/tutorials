@@ -13,6 +13,10 @@ steps:
   - bash: |
       docker build -t ${{ parameters.image_registry }}/${{ parameters.image_name }}:${{ parameters.image_tag }} .
       docker save -o $(Build.ArtifactStagingDirectory)/${{ parameters.image_name }}.tar ${{ parameters.image_registry }}/${{ parameters.image_name }}:${{ parameters.image_tag }}
-      docker push ${{ parameters.image_registry }}/${{ parameters.image_name }}:${{ parameters.image_tag }}
     displayName: Build and push docker image ${{ parameters.image_name }} to ${{ parameters.image_registry }}
     workingDirectory: ${{ parameters.dockerfile_path }}
+  - template: push-image.yaml
+    parameters:
+      image_registry: ${{ parameters.image_registry }}
+      image_name: ${{ parameters.image_name }}
+      image_tag: ${{ parameters.image_tag }}
