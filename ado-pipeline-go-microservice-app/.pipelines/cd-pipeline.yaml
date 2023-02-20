@@ -1,6 +1,7 @@
 trigger:
   branches:
     include:
+    - main
     - v*
   paths:
     exclude: 
@@ -164,7 +165,7 @@ stages:
         displayName: Delete kind cluster
         condition: always() # We want to delete the kind cluster regardless if the tests pass or fail. 
 
-    - stage: publish
+  #  - stage: publish
   #   pool:
   #     vmImage: ubuntu-latest # Default agent pool for Azure Pipelines
   #   jobs:
