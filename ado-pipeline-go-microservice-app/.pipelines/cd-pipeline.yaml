@@ -45,6 +45,10 @@ stages:
           image_name: $(server.image.name)
           image_tag: $(IMAGE_TAG)
           dockerfile_path: ./ado-pipeline-go-microservice-app/server
+      - task: PublishBuildArtifacts@1
+        inputs:
+          pathToPublish: '$(Build.ArtifactStagingDirectory)'
+          artifactName: drop1
 
 # - stage: test
 #   pool:
@@ -169,14 +173,11 @@ stages:
   pool:
     vmImage: ubuntu-latest # Default agent pool for Azure Pipelines
   jobs:
-    - job: build_docker_images
+    - job: publish_docker_images
       steps:
       - task: DockerInstaller@0
         inputs:
           dockerVersion: '17.09.0-ce' # string. Required. Docker Version. Default: 17.09.0-ce.
-      - template: ./templates/install-kind.yaml
-        parameters:
-          kind_version: 0.17.0
       - bash: |
           echo "##vso[task.setvariable variable=IMAGE_TAG]$(Build.SourceBranchName)"
           echo $IMAGE_TAG
@@ -189,9 +190,9 @@ stages:
           DOCKER_PASSWORD: $(prod.registry.password)
       - task: DownloadPipelineArtifact@2
         displayName: Download artifacts from build stage
-      - bash: docker load -i $(client.image.name).tar
+      - bash: docker load -i $(Pipeline.Workspace)/$(client.image.name).tar
         displayName: Load client image
-      - bash: docker load -i $(server.image.name).tar
+      - bash: docker load -i $(Pipeline.Workspace)/$(server.image.name).tar
         displayName: Load server image
       - template: templates/push-image.yaml
         parameters:
