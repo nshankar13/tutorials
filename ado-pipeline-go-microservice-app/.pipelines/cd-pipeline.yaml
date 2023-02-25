@@ -171,8 +171,8 @@ stages:
         displayName: Delete kind cluster
         condition: always() # We want to delete the kind cluster regardless if the tests pass or fail. 
 
-- stage: publish
-  dependsOn: ["build", "validate"]
+- stage: production
+  dependsOn: ["build", "test"]
   variables:
     IMAGE_TAG: $[ stageDependencies.build.build_docker_images.outputs['setImageTag.IMAGE_TAG'] ]
   pool:
