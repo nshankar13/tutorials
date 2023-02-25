@@ -1,4 +1,10 @@
-trigger: none
+trigger:
+  branches:
+      include:
+      - main
+    paths:
+      exclude: 
+      - docs/*
 
 pr:
   branches:
@@ -118,7 +124,7 @@ stages:
               app: $server_image_name
           spec:
             ports:
-            - port: 8080
+            - port: $server_port
               name: server-port
             selector:
               app: $server_image_name
@@ -150,6 +156,7 @@ stages:
         env:
           server_image_name: $(server.image.name)
           server_image_tag: $(IMAGE_TAG)
+          server_port: $(server.port)
           registry: $(staging.registry)
       - template: ./templates/wait-for-deployment.yaml
         parameters:

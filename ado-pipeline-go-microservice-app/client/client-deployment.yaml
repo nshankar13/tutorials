@@ -17,6 +17,6 @@ spec:
     spec:
       containers:
       - name: client
-        image: nshankar13/client:v1.0.0
+        image: nshankar13/client:main
         imagePullPolicy: Always
         command: ["/client"]
