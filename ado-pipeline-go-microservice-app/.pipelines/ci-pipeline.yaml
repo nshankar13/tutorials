@@ -45,13 +45,13 @@ stages:
         parameters:
           image_registry: $(staging.registry)
           image_name: $(client.image.name)
-          image_tag: $(IMAGE_TAG)
+          image_tag: $(setImageTag.IMAGE_TAG)
           dockerfile_path: ./ado-pipeline-go-microservice-app/client
       - template: ./templates/build-and-push-image.yaml
         parameters:
           image_registry: $(staging.registry)
           image_name: $(server.image.name)
-          image_tag: $(IMAGE_TAG)
+          image_tag: $(setImageTag.IMAGE_TAG)
           dockerfile_path: ./ado-pipeline-go-microservice-app/server
       - task: PublishBuildArtifacts@1
         inputs:
