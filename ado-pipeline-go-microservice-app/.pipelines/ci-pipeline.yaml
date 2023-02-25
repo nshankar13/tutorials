@@ -30,9 +30,6 @@ stages:
       - task: DockerInstaller@0
         inputs:
           dockerVersion: '17.09.0-ce' # string. Required. Docker Version. Default: 17.09.0-ce.
-      - template: ./templates/install-kind.yaml
-        parameters:
-          kind_version: 0.17.0
       - bash: docker version
         displayName: Ensure docker installation succeeded
       - bash: docker login -u $(staging.registry) -p "$DOCKER_PASSWORD"
