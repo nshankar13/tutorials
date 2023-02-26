@@ -26,5 +26,5 @@ steps:
       #   echo "waiting for deployment ${{ parameters.deployment_name }} in namespace ${{ parameters.deployment_namespace }} to become available"
       #   sleep ${{ parameters.interval_seconds }}
       # done
-      # echo "deployment ${{ parameters.deployment_name }} in namespace ${{ parameters.deployment_namespace }} is available"
+      echo "deployment ${{ parameters.deployment_name }} in namespace ${{ parameters.deployment_namespace }} is available"
     displayName: Wait for deployment ${{ parameters.deployment_name }} in namespace ${{ parameters.deployment_namespace }} to become available
