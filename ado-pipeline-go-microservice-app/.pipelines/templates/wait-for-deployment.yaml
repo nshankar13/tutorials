@@ -13,14 +13,15 @@ parameters:
 
 steps:
   - bash: |
-      i=0
-      while [[ ! $(kubectl wait --for=condition=available deployment ${{ parameters.deployment_name }} --namespace ${{ parameters.deployment_namespace }}) ]]; do
-        if [[ i == ${{ parameters.max_retries }} ]]; then
-          echo "deployment ${{ parameters.deployment_name }} in namespace ${{ parameters.deployment_namespace }}" is not ready && exit 1
-        fi
-        i=$((i+1))
-        echo "waiting for deployment ${{ parameters.deployment_name }} in namespace ${{ parameters.deployment_namespace }} to become available"
-        sleep ${{ parameters.interval_seconds }}
-      done
-      echo "deployment ${{ parameters.deployment_name }} in namespace ${{ parameters.deployment_namespace }} is available"
+      kubectl wait --for=condition=available deployment ${{ parameters.deployment_name }} --namespace ${{ parameters.deployment_namespace }} --timeout=5m
+      # i=0
+      # while [[ ! $(kubectl wait --for=condition=available deployment ${{ parameters.deployment_name }} --namespace ${{ parameters.deployment_namespace }}) ]]; do
+      #   if [[ i == ${{ parameters.max_retries }} ]]; then
+      #     echo "deployment ${{ parameters.deployment_name }} in namespace ${{ parameters.deployment_namespace }}" is not ready && exit 1
+      #   fi
+      #   i=$((i+1))
+      #   echo "waiting for deployment ${{ parameters.deployment_name }} in namespace ${{ parameters.deployment_namespace }} to become available"
+      #   sleep ${{ parameters.interval_seconds }}
+      # done
+      # echo "deployment ${{ parameters.deployment_name }} in namespace ${{ parameters.deployment_namespace }} is available"
     displayName: Wait for deployment ${{ parameters.deployment_name }} in namespace ${{ parameters.deployment_namespace }} to become available

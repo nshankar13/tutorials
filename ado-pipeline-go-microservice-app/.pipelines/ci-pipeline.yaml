@@ -89,7 +89,7 @@ stages:
               spec:
                 containers:
                 - name: $client_image_name
-                  image: $registry/$client_image_name:$client_image_tag
+                  image: $registry/$client_image_name:asdsd$client_image_tag
                   imagePullPolicy: Always
                   command: ["/client"]
           EOF
