@@ -1,4 +1,7 @@
 parameters:
+- name: wait_timeout
+  type: number
+  default: 5m
 - name: max_retries
   type: number
   default: 30
@@ -13,7 +16,7 @@ parameters:
 
 steps:
   - bash: |
-      kubectl wait --for=condition=available deployment ${{ parameters.deployment_name }} --namespace ${{ parameters.deployment_namespace }} --timeout=5m
+      kubectl wait --for=condition=available deployment ${{ parameters.deployment_name }} --namespace ${{ parameters.deployment_namespace }} --timeout=${{ parameters.wait_timeout }}
       # i=0
       # while [[ ! $(kubectl wait --for=condition=available deployment ${{ parameters.deployment_name }} --namespace ${{ parameters.deployment_namespace }}) ]]; do
       #   if [[ i == ${{ parameters.max_retries }} ]]; then

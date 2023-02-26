@@ -89,7 +89,7 @@ stages:
               spec:
                 containers:
                 - name: $client_image_name
-                  image: $registry/$client_image_name:asdsd$client_image_tag
+                  image: $registry/$client_image_name:$client_image_tag
                   imagePullPolicy: Always
                   command: ["/client"]
           EOF
@@ -100,8 +100,7 @@ stages:
           registry: $(staging.registry)
       - template: ./templates/wait-for-deployment.yaml
         parameters:
-          max_retries: 30
-          interval_seconds: 10
+          wait_timeout: 5m
           deployment_name: $(client.image.name)
           deployment_namespace: $(client.image.name)
       - bash: |
@@ -152,8 +151,7 @@ stages:
           registry: $(staging.registry)
       - template: ./templates/wait-for-deployment.yaml
         parameters:
-          max_retries: 30
-          interval_seconds: 10
+          wait_timeout: 5m
           deployment_name: $(server.image.name)
           deployment_namespace: $(server.image.name)
       - bash: |
