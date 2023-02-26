@@ -1,6 +1,6 @@
 parameters:
 - name: wait_timeout
-  type: number
+  type: string
   default: 5m
 - name: max_retries
   type: number
