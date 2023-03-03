@@ -1,8 +1,8 @@
 trigger:
   tags:
-    - v*
+  - v*
   branches:
-    - release-v*
+  - release-v*
   paths:
     exclude: 
     - docs/*
