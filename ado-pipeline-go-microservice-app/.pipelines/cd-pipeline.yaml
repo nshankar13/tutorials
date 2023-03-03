@@ -1,7 +1,7 @@
 trigger:
-  branches:
-    include:
+  tags:
     - v*
+  branches:
     - release-v*
   paths:
     exclude: 
