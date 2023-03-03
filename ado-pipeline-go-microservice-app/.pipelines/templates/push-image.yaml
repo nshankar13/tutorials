@@ -9,4 +9,4 @@ parameters:
   
 steps:
   - bash: docker push ${{ parameters.image_registry }}/${{ parameters.image_name }}:${{ parameters.image_tag }}
-    displayName: Build and push docker image ${{ parameters.image_name }} to ${{ parameters.image_registry }}
+    displayName: Push docker image ${{ parameters.image_name }} to ${{ parameters.image_registry }}
