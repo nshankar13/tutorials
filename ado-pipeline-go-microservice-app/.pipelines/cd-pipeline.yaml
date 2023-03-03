@@ -1,8 +1,8 @@
 trigger:
   branches:
     include:
-    - main
     - v*
+    - release-v*
   paths:
     exclude: 
     - docs/*
@@ -195,11 +195,4 @@ stages:
           image_registry: $(prod.registry)
           image_name: $(server.image.name)
           image_tag: $(IMAGE_TAG)
-        
-## Delete kind cluster once tests pass
 
-
-## Publish stage that only gets enabled / triggered for release job? 
-
-# Push to staging registry (or as test tag) before publishing to official registry?
-# Or distinguish between CI and release Pipeline? 

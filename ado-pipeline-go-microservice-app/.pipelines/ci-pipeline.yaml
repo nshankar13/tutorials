@@ -169,12 +169,3 @@ stages:
           kind delete cluster --name kind-test
         displayName: Delete kind cluster
         condition: always() # We want to delete the kind cluster regardless if the tests pass or fail. 
-
-
-## Delete kind cluster once tests pass
-
-
-## Publish stage that only gets enabled / triggered for release job? 
-
-# Push to staging registry (or as test tag) before publishing to official registry?
-# Or distinguish between CI and release Pipeline? 
