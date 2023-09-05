@@ -2,7 +2,7 @@
 set -x
 
 PREFIX="${CLUSTER_NAME:-testCluster}"
-RG="nshankar_personal_rg"
+RG="<resource_group>"
 LOC="eastus"
 PLUGIN=azure
 AKSNAME="${PREFIX}"
