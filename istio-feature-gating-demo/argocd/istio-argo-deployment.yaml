@@ -34,3 +34,61 @@ spec:
     chart: istiod
     repoURL: https://istio-release.storage.googleapis.com/charts
     targetRevision: 1.19.3
+    helm:
+      parameters:
+      - name: "replicaCount"
+        value: "2"
+      - name: "resources.requests.cpu"
+        value: 500m
+      - name: "resources.requests.memory"
+        value: 2048Mi
+      - name: "meshConfig.outboundTrafficPolicy.mode"
+        value: REGISTRY_ONLY
+      - name: "meshConfig.defaultConfig.concurrency"
+        value: "1"
+      - name: "meshConfig.defaultConfig.dnsRefreshRate"
+        value: "90s"
+---
+apiVersion: argoproj.io/v1alpha1
+kind: Application
+metadata:
+  name: istio-ingress
+  namespace: argocd
+  finalizers:
+  - resources-finalizer.argocd.argoproj.io
+spec:
+  destination:
+    server: https://kubernetes.default.svc
+    namespace: istio-ingress
+  project: default
+  source:
+    chart: gateway
+    repoURL: https://istio-release.storage.googleapis.com/charts
+    targetRevision: 1.19.3
+  syncPolicy:
+    syncOptions:
+      - CreateNamespace=true
+---
+apiVersion: argoproj.io/v1alpha1
+kind: Application
+metadata:
+  name: istio-egress
+  namespace: argocd
+  finalizers:
+  - resources-finalizer.argocd.argoproj.io
+spec:
+  destination:
+    server: https://kubernetes.default.svc
+    namespace: istio-egress
+  project: default
+  source:
+    chart: gateway
+    repoURL: https://istio-release.storage.googleapis.com/charts
+    targetRevision: 1.19.3
+    helm:
+      parameters:
+        - name: "service.type"
+          value: ClusterIP
+  syncPolicy:
+    syncOptions:
+      - CreateNamespace=true
