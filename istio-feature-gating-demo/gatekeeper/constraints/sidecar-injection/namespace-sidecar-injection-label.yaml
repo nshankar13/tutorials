@@ -18,6 +18,9 @@ spec:
     - istio-ingress
     - istio-egress
     - kube-system
+    - kube-public
+    - kube-node-lease
+    - argocd
   parameters:
     labels:
     - key: istio-injection

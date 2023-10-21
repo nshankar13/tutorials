@@ -15,6 +15,10 @@ spec:
     - kube-system
     - istio-ingress
     - istio-egress
+    - default
+    - kube-system
+    - kube-node-lease
+    - kube-public
   parameters:
     prefixes:
     - http
