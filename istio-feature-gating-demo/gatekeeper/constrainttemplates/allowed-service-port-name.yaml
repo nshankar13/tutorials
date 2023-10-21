@@ -1,0 +1,37 @@
+apiVersion: templates.gatekeeper.sh/v1
+kind: ConstraintTemplate
+metadata:
+  annotations:
+    description: Requires that service port names have a prefix from a specified list.
+  name: allowedserviceportname
+spec:
+  crd:
+    spec:
+      names:
+        kind: AllowedServicePortName
+      validation:
+        openAPIV3Schema:
+          type: object
+          properties:
+            prefixes:
+              description: Prefixes of allowed service port names.
+              items:
+                type: string
+              type: array
+  targets:
+  - target: admission.k8s.gatekeeper.sh
+    rego: |
+      package istio.guardrails.allowedserviceportname
+
+      violation[{"msg": msg}] {
+        service := input.review.object
+        port := service.spec.ports[_]
+        prefixes := input.parameters.prefixes
+        not is_prefixed(port, prefixes)
+        msg := sprintf("the service <%v> port name <%v> has a disallowed prefix, allowed prefixes are %v", [service.metadata.name, port.name, prefixes])
+      }
+
+      is_prefixed(port, prefixes) {
+        prefix := prefixes[_]
+        startswith(port.name, prefix)
+      }

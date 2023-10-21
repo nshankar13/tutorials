@@ -1,0 +1,19 @@
+apiVersion: constraints.gatekeeper.sh/v1beta1
+kind: AllowedServicePortName
+metadata:
+  name: port-name-constraint
+spec:
+  enforcementAction: deny
+  match:
+    kinds:
+    - apiGroups:
+      - ""
+      kinds:
+      - Service
+    excludedNamespaces:
+    - kube-system
+  parameters:
+    prefixes:
+    - http
+    - grpc
+    - tcp
