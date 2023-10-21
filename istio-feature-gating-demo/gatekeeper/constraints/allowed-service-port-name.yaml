@@ -19,6 +19,7 @@ spec:
     - kube-system
     - kube-node-lease
     - kube-public
+    - argocd
   parameters:
     prefixes:
     - http
