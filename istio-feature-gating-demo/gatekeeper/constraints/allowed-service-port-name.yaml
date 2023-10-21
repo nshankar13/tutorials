@@ -12,6 +12,8 @@ spec:
       - Service
     excludedNamespaces:
     - kube-system
+    - istio-ingress
+    - istio-egress
   parameters:
     prefixes:
     - http
