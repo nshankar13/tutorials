@@ -1,4 +1,5 @@
-# Source: https://github.com/mathieu-benoit/istio-gatekeeper-demosapiVersion: templates.gatekeeper.sh/v1
+# Source: https://github.com/mathieu-benoit/istio-gatekeeper-demos
+apiVersion: templates.gatekeeper.sh/v1
 kind: ConstraintTemplate
 metadata:
   annotations:
