@@ -11,16 +11,12 @@ spec:
       kinds:
       - Namespace
     excludedNamespaces:
-    - config-management-monitoring
-    - config-management-system
     - default
     - gatekeeper-system
-    - gke-connect
     - istio-system
-    - kube-node-lease
-    - kube-public
+    - istio-ingress
+    - istio-egress
     - kube-system
-    - resource-group-system
   parameters:
     labels:
     - key: istio-injection
