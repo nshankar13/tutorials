@@ -1,0 +1,12 @@
+apiVersion: constraints.gatekeeper.sh/v1beta1
+kind: MeshSidecarHosts
+metadata:
+  name: mesh-level-sidecar
+spec:
+  enforcementAction: dryrun
+  match:
+    kinds:
+    - apiGroups:
+      - networking.istio.io
+      kinds:
+      - Sidecar

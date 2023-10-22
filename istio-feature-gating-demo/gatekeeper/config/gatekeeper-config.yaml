@@ -16,3 +16,6 @@ spec:
       - group: "security.istio.io"
         version: "v1beta1"
         kind: "AuthorizationPolicy"
+      - group: "networking.istio.io"
+        version: "v1beta1"
+        kind: "Sidecar"
