@@ -30,8 +30,7 @@ spec:
 
       namespace_missing_restricting_sidecar(ns) {
         sc := data.inventory.namespace[ns][_].Sidecar[_]
-        egress := sc.spec.egress[_]
-        host := egress.hosts[_]
+        host := sc.spec.egress[_].hosts[_]
         not host == "./"
         not host == "istio-system/*"
       }
