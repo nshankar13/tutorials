@@ -24,13 +24,19 @@ spec:
       violation[{"msg": msg}] {
         root_ns := object.get(object.get(input, "parameters", {}), "rootNamespace", "istio-system")
         input.review.object.metadata.name == root_ns
-        namespace_missing_restricting_sidecar(root_ns)
-        msg := sprintf("Root namespace <%v> does not have a Sidecar to restrict sidecar traffic to the same namespace and istio-system namespace", [root_ns])
+        not namespace_has_sidecar_cr_restriction(root_ns, "istio-system/*")
+        msg := sprintf("Root namespace <%v> does not have a Sidecar to restrict sidecar traffic to the istio-system namespace.", [root_ns])
       }
 
-      namespace_missing_restricting_sidecar(ns) {
+      violation[{"msg": msg}] {
+        root_ns := object.get(object.get(input, "parameters", {}), "rootNamespace", "istio-system")
+        input.review.object.metadata.name == root_ns
+        not namespace_has_sidecar_cr_restriction(root_ns, "./")
+        msg := sprintf("Root namespace <%v> does not have a Sidecar to restrict sidecar traffic to the same namespace.", [root_ns])
+      }
+
+      namespace_has_sidecar_cr_restriction(ns, hostName) {
         sc := data.inventory.namespace[ns][_].Sidecar[_]
         host := sc.spec.egress[_].hosts[_]
-        not host == "./"
-        not host == "istio-system/*"
+        host == hostName
       }
