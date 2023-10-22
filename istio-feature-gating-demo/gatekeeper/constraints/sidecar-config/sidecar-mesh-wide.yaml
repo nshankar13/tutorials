@@ -7,6 +7,6 @@ spec:
   match:
     kinds:
     - apiGroups:
-      - networking.istio.io
+      - ""
       kinds:
-      - Sidecar
+      - Namespace
