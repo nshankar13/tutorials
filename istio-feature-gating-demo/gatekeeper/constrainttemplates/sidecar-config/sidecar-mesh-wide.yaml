@@ -27,7 +27,7 @@ spec:
         req_hosts := ["./*", "istio-system/*", "istio-egress/*"]
         req_host := req_hosts[_]
         not namespace_has_sidecar_cr_restriction(root_ns, req_host)
-        msg := sprintf("Root namespace <%v> does not have a Sidecar to restrict sidecar traffic to the istio-system namespace.", [root_ns])
+        msg := sprintf("Root namespace <%v> does not have a Sidecar to restrict sidecar egress traffic to host <%v>", [root_ns, req_host])
       }
 
       namespace_has_sidecar_cr_restriction(ns, hostName) {
