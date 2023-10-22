@@ -19,23 +19,19 @@ spec:
   targets:
   - target: admission.k8s.gatekeeper.sh
     rego: |-
-      package istio.security.sidecars
+      package istio.networking.sidecars
 
       violation[{"msg": msg}] {
         root_ns := object.get(object.get(input, "parameters", {}), "rootNamespace", "istio-system")
         input.review.object.metadata.name == root_ns
-        not namespace_has_restricting_sidecar(root_ns)
+        namespace_missing_restricting_sidecar(root_ns)
         msg := sprintf("Root namespace <%v> does not have a Sidecar to restrict sidecar traffic to the same namespace and istio-system namespace", [root_ns])
       }
 
-      namespace_has_restricting_sidecar(ns) {
+      namespace_missing_restricting_sidecar(ns) {
         sc := data.inventory.namespace[ns][_].Sidecar[_]
         egress := sc.spec.egress[_]
-        hosts := egress.hosts[_]
-        containsHost(hosts, "./*")
-        containsHost(hosts, "istio-system/*")
-      }
-
-      containsHost(hosts, host) {
-        hosts[_] = host
+        host := egress.hosts[_]
+        not host == "./"
+        not host == "istio-system/*"
       }
