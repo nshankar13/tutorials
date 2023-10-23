@@ -20,14 +20,14 @@ spec:
         is_sidecar(input.review.kind)
         host := spec.egress[_].hosts[_]
         host == "*"
-        msg := sprint("Cannot use broad host definition \"*\" in Sidecar egress configuration.")
+        msg := print("Cannot use broad host definition \"*\" in Sidecar egress configuration.")
       }
 
       violation[{"msg": msg}] {
         is_sidecar(input.review.kind)
         outboundTPMode := spec.outboundTrafficPolicy.mode
         outboundTPMode == "ALLOW_ANY"
-        msg := sprint("Outbound traffic policy mode can only be set to \"REGISTRY_ONLY\" in Sidecar configuration.")
+        msg := print("Outbound traffic policy mode can only be set to \"REGISTRY_ONLY\" in Sidecar configuration.")
       }
 
       is_sidecar(kind) {
