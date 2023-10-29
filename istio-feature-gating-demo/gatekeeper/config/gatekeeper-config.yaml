@@ -21,6 +21,6 @@ spec:
       - group: "networking.istio.io"
         version: "v1beta1"
         kind: "Sidecar"
-      - group: "networking.istio.io/v1alpha3"
+      - group: "networking.istio.io"
         version: "v1alpha3"
         kind: "EnvoyFilter"
