@@ -1,0 +1,21 @@
+apiVersion: templates.gatekeeper.sh/v1
+kind: BlockExperimentlAlphaCrs
+metadata:
+  annotations:
+    description: Verify that only rate limiting EnvoyFilters are used. 
+  name: blockexperimentalalphacrs
+spec:
+  crd:
+    spec:
+      names:
+        kind: BlockExperimentlAlphaCrs
+  targets:
+  - target: admission.k8s.gatekeeper.sh
+    rego: |-
+      package istio.guardrails.featurestatus
+
+      obj = input.review.object.spec
+
+      violation[{"msg": msg}] {
+        msg := sprintf("%v is experimental or alpha. Can only use beta or stable level APIs", [input.review.kind.kind])
+      }

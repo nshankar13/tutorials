@@ -1,0 +1,16 @@
+apiVersion: constraints.gatekeeper.sh/v1beta1
+kind: BlockAlphaBetaCrs
+metadata:
+  name: block-alpha-beta-crs
+spec:
+  enforcementAction: deny
+  match:
+    kinds:
+    - apiGroups:
+      - extensions.istio.io
+      kinds:
+      - WasmPlugin
+    - apiGroups:
+      - telemetry.istio.io
+      kinds:
+      - Telemetry
