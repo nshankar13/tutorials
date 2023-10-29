@@ -25,17 +25,16 @@ spec:
 
       violation[{"msg": msg}] {
         cm := input.review.object
-        # msg := "can't edit CM"
-        # disallowList := input.parameters.meshConfigDisallowList
-        # meshConfigFields := split(cm.data, "\n")
-        # is_disallowed(meshConfigField, disallowList)
         cm.metadata.name == "istio" # Will need to change this if setting Istio revision to non-default value.
+        disallowList := input.parameters.meshConfigDisallowList
+        meshConfigFields := split(cm.data, "\n")
+        is_disallowed(meshConfigField, disallowList)
         #msg := sprintf("MeshConfig field <%v> is disallowed - disallowed values are %v", [split(cm.data, "\n"), input.parameters.meshConfigDisallowList])
         msg := "can't edit CM"
       }
 
-      # is_disallowed(field, disallowList) {
-      #   endswith(field, ":") # ensure that field is a key and not a value
-      #   disallowedField := disallowList[_]
-      #   contains(field, disallowedField)
-      # }
+      is_disallowed(field, disallowList) {
+        endswith(field, ":") # ensure that field is a key and not a value
+        disallowedField := disallowList[_]
+        contains(field, disallowedField)
+      }
