@@ -2,7 +2,7 @@ apiVersion: templates.gatekeeper.sh/v1
 kind: ConstraintTemplate
 metadata:
   annotations:
-    description: Enforce that there's a default sidecar CR to restrict the scope of egress traffic. 
+    description: Verify sidecar egress hosts and traffic policy mode
   name: sidecarhostsandtrafficpolicy
 spec:
   crd:

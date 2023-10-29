@@ -1,0 +1,21 @@
+apiVersion: constraints.gatekeeper.sh/v1beta1
+kind: BlockProxySidecarAnnotations
+metadata:
+  name: proxy-sidecar-annotations
+spec:
+  enforcementAction: deny
+  match:
+    kinds:
+    - apiGroups:
+      - apps
+      kinds:
+      - Deployment
+    - apiGroups:
+      - ""
+      kinds:
+      - Pod
+  parameters:
+    disallowedAnnotations:
+    - proxy.istio.io/config
+    - sidecar.istio.io/proxyCPU
+    - sidecar.istio.io/proxyMemory

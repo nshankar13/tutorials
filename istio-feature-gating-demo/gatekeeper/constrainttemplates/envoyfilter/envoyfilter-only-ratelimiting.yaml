@@ -1,0 +1,36 @@
+apiVersion: templates.gatekeeper.sh/v1
+kind: ConstraintTemplate
+metadata:
+  annotations:
+    description: Verify that only rate limiting EnvoyFilters are used. 
+  name: OnlyRateLimitingEnvoyFilter
+spec:
+  crd:
+    spec:
+      names:
+        kind: OnlyRateLimitingEnvoyFilter
+      validation:
+        openAPIV3Schema:
+          type: object
+          properties:
+            rateLimitEnvoyFilterType:
+              description: String for the EnvoyFilter rate limit type. 
+              type: string
+
+  - target: admission.k8s.gatekeeper.sh
+    rego: |-
+      package istio.networking.envoyfilter
+
+      spec = input.review.object.spec
+
+      violation[{"msg": msg}] {
+        is_envoyfilter(input.review.kind)
+        filterType := spec.configPatches[_].patch.value.types_config["@type"]
+        filterType != input.parameters.rateLimitEnvoyFilterType
+        msg := "Cannot use broad host definition \"*\" in Sidecar egress configuration."
+      }
+
+      is_envoyfilter(kind) {
+          kind.kind == "EnvoyFilter"
+          kind.group == "networking.istio.io"
+      }

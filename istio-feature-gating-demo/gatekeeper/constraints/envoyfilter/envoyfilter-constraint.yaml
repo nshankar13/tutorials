@@ -1,0 +1,14 @@
+apiVersion: constraints.gatekeeper.sh/v1beta1
+kind: OnlyRateLimitingEnvoyFilter
+metadata:
+  name: envoyfilter-constraint
+spec:
+  enforcementAction: deny
+  match:
+    kinds:
+    - apiGroups:
+      - networking.istio.io
+      kinds:
+      - EnvoyFilter
+  parameter:
+    rateLimitEnvoyFilterType: "type.googleapis.com/envoy.extensions.filters.http.ratelimit.v3.RateLimit"

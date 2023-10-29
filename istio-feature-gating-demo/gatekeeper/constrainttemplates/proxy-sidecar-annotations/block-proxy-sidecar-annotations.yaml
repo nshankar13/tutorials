@@ -1,0 +1,47 @@
+apiVersion: templates.gatekeeper.sh/v1
+kind: ConstraintTemplate
+metadata:
+  annotations:
+    description: Block Pods and Deployments with disallowed annotations.
+  name: blockproxysidecarannotations
+spec:
+  crd:
+    spec:
+      names:
+        kind: BlockProxySidecarAnnotations
+      validation:
+        openAPIV3Schema:
+          type: object
+          properties:
+            disallowedAnnotations:
+              description: Disallowed resource annotations.
+              items:
+                type: string
+              type: array
+  targets:
+  - target: admission.k8s.gatekeeper.sh
+    rego: |
+      package istio.security.workloadpolicyannotations
+
+      disallowed_annotations := input.parameters.disallowedAnnotations
+
+      violation[{"msg": msg}] {
+          input.review.kind.kind == "Pod"
+          pod := input.review.object
+          annotation := pod.metadata.annotations[_]
+          annotation_is_disallowed(annotation)
+          msg := sprintf("The annotation %v: is disallowed. List of disallowed annotations: %v", [annotation, disallowed_annotations])
+      }
+
+      violation[{"msg": msg}] {
+          input.review.kind.kind == "Deployment"
+          pod := input.review.object.spec.template
+          annotation := pod.metadata.annotations[_]
+          annotation_is_disallowed(annotation)
+          msg := sprintf("The annotation %v: is disallowed. List of disallowed annotations: %v", [annotation, disallowed_annotations])
+      }
+
+      annotation_is_disallowed(annotation) {
+        disallowed_annotation := disallowed_annotations[_]
+        annotation == disallowed_annotation
+      }
