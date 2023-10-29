@@ -8,7 +8,7 @@ spec:
   crd:
     spec:
       names:
-        kind: MeshConfigDisallowList
+        kind: MeshConfigDisallow
       validation:
         openAPIV3Schema:
           type: object
