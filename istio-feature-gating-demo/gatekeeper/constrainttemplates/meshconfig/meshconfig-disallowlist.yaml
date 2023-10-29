@@ -3,12 +3,12 @@ kind: ConstraintTemplate
 metadata:
   annotations:
     description: Enforce that MeshConfig and ProxyConfig values are ones that aren't in the disallowlist. 
-  name: meshconfigallowlist
+  name: meshconfigdisallowlist
 spec:
   crd:
     spec:
       names:
-        kind: MeshConfigAllowList
+        kind: MeshConfigDisallowList
       validation:
         openAPIV3Schema:
           type: object
@@ -25,7 +25,7 @@ spec:
 
       violation[{"msg": msg}] {
         cm := input.review.object
-        cm.metadata.name = "istio" # Will need to change this if setting Istio revision to non-default value. 
+        cm.metadata.name == "istio" # Will need to change this if setting Istio revision to non-default value. 
         disallowList := input.parameters.meshConfigDisallowList
         meshConfigField := split(cm.data, "\n")[_]
         is_disallowed(meshConfigField, disallowList)
