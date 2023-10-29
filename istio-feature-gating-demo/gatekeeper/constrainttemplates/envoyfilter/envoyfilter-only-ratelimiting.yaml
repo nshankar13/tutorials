@@ -3,7 +3,7 @@ kind: ConstraintTemplate
 metadata:
   annotations:
     description: Verify that only rate limiting EnvoyFilters are used. 
-  name: OnlyRateLimitingEnvoyFilter
+  name: onlyratelimitingenvoyfilter
 spec:
   crd:
     spec:
