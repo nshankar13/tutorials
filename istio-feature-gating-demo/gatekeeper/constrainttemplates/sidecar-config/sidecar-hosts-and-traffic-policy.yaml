@@ -26,7 +26,7 @@ spec:
       violation[{"msg": msg}] {
         is_sidecar(input.review.kind)
         outboundTPMode := spec.outboundTrafficPolicy.mode
-        outboundTPMode == "ALLOW_ANY"
+        outboundTPMode != "REGISTRY_ONLY"
         msg := "Outbound traffic policy mode can only be set to \"REGISTRY_ONLY\" in Sidecar configuration."
       }
 

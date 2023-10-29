@@ -1,0 +1,53 @@
+apiVersion: constraints.gatekeeper.sh/v1beta1
+kind: MeshConfigAllowList
+metadata:
+  name: meshconfig-allowlist-constraint
+spec:
+  enforcementAction: deny
+  match:
+    kinds:
+    - apiGroups:
+      - ""
+      kinds:
+      - ConfigMap
+    namespaces:
+    - istio-system
+  # This sets a string disallowlist - the constraint template policy will parse the Istio ConfigMap (MeshConfig) and ensure that no fields are from the disallowlist.
+  # However, these validations should ideally be part of a separate, Go-based admission controller webhook for a more reliable and fine-grained parsing of the MeshConfig (and ProxyConfig). 
+  # See https://pkg.go.dev/istio.io/api/mesh/v1alpha1#MeshConfig and https://github.com/istio/istio/blob/1.19.3/pkg/config/mesh/mesh.go#L188 for examples.
+  # All MeshConfig and ProxyConfig fields: https://istio.io/latest/docs/reference/config/istio.mesh.v1alpha1. 
+  parameters:
+    meshConfigDisallowList:
+    - proxyListenPort
+    - proxyInboundListenPort
+    - proxyHttpPort
+    - protocolDetectionTimeout
+    - ingressClass
+    - ingressService
+    - ingressControllerMode
+    - ingressSelector
+    - configSources
+    - enableAutoMtls
+    - rootNamespace
+    - inboundClusterStatName
+    - outboundClusterStatName
+    - pathNormalization
+    - meshMTLS
+    - tlsDefaults
+    - configPath
+    - binaryPath
+    - serviceCluster
+    - tracingServiceName
+    - discoveryAddress
+    - statsUdpAddress
+    - proxyAdminPort
+    - controlPlaneAuthPolicy
+    - customConfigFile
+    - proxyBootstrapTemplate
+    - interceptionMode
+    - runtimeValues
+    - statusPort
+    - gatewayTopology
+    - meshId
+    - readinessProbe
+    - image

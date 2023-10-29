@@ -1,0 +1,39 @@
+apiVersion: templates.gatekeeper.sh/v1
+kind: ConstraintTemplate
+metadata:
+  annotations:
+    description: Enforce that MeshConfig and ProxyConfig values are ones that aren't in the disallowlist. 
+  name: meshconfigallowlist
+spec:
+  crd:
+    spec:
+      names:
+        kind: MeshConfigAllowList
+      validation:
+        openAPIV3Schema:
+          type: object
+          properties:
+            meshConfigDisallowList:
+              description: Disallowed MeshConfig values
+              items:
+                type: string
+              type: array
+  targets:
+  - target: admission.k8s.gatekeeper.sh
+    rego: |
+      package istio.guardrails.disallowedmeshconfigvalues
+
+      violation[{"msg": msg}] {
+        cm := input.review.object
+        cm.metadata.name = "istio" # Will need to change this if setting Istio revision to non-default value. 
+        disallowList := input.parameters.meshConfigDisallowList
+        meshConfigField := split(cm.data, "\n")[_]
+        is_disallowed(meshConfigField, disallowList)
+        msg := sprintf("MeshConfig field <%v> is disallowed - disallowed values are %v", [mesh, prefixes])
+      }
+
+      is_disallowed(field, disallowList) {
+        endswith(field, ":") # ensure that field is a key and not a value
+        disallowedField := disallowList[_]
+        contains(field, disallowedField)
+      }

@@ -3,7 +3,7 @@ apiVersion: templates.gatekeeper.sh/v1
 kind: ConstraintTemplate
 metadata:
   annotations:
-    description: Enforce the mesh level strict mtls PeerAuthentication.
+    description: Enforce a default deny authorization policy. 
   name: authzpolicydefaultdeny
 spec:
   crd:
