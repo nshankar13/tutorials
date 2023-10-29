@@ -26,8 +26,9 @@ spec:
       violation[{"msg": msg}] {
         is_envoyfilter(input.review.kind)
         filterType := spec.configPatches[_].patch.value.typed_config["@type"]
-        # filterType != input.parameters.rateLimitEnvoyFilterType
-        msg := sprintf("Cannot use EnvoyFilter. Filter type: %v, allowed type: %v", [filterType, input.parameters.rateLimitEnvoyFilterType])
+        filterType != ""
+        filterType != input.parameters.rateLimitEnvoyFilterType
+        msg := sprintf("Cannot use EnvoyFilter of filter type: %v, only allowed type is %v", [filterType, input.parameters.rateLimitEnvoyFilterType])
       }
 
       is_envoyfilter(kind) {
