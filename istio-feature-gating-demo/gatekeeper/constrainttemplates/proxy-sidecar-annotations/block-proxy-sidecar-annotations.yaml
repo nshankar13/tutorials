@@ -28,20 +28,15 @@ spec:
       violation[{"msg": msg}] {
           input.review.kind.kind == "Pod"
           pod := input.review.object
-          annotation := pod.metadata.annotations[_]
-          annotation_is_disallowed(annotation)
-          msg := sprintf("The annotation %v: is disallowed. List of disallowed annotations: %v", [annotation, disallowed_annotations])
+          pod.metadata.annotations[key]
+          key in disallowed_annotations
+          msg := sprintf("The annotation %v: is disallowed. List of disallowed annotations: %v", [key, disallowed_annotations])
       }
 
       violation[{"msg": msg}] {
           input.review.kind.kind == "Deployment"
           pod := input.review.object.spec.template
-          annotation := pod.metadata.annotations[_]
-          annotation_is_disallowed(annotation)
-          msg := sprintf("The annotation %v: is disallowed. List of disallowed annotations: %v", [annotation, disallowed_annotations])
-      }
-
-      annotation_is_disallowed(annotation) {
-        disallowed_annotation := disallowed_annotations[_]
-        annotation == disallowed_annotation
+          pod.metadata.annotations[key]
+          key in disallowed_annotations
+          msg := sprintf("The annotation %v: is disallowed. List of disallowed annotations: %v", [key, disallowed_annotations])
       }

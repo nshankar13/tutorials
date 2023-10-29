@@ -37,6 +37,5 @@ spec:
 
       namespace_has_sidecar_cr_restriction(ns, hostName) {
         sc := data.inventory.namespace[ns][_].Sidecar[_]
-        host := sc.spec.egress[_].hosts[_]
-        host == hostName
+        hostName in sc.spec.egress[_].hosts
       }
