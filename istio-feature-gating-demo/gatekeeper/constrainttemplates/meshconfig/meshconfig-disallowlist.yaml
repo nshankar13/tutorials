@@ -25,7 +25,8 @@ spec:
 
       violation[{"msg": msg}] {
         cm := input.review.object
-        cm.metadata.name == "istio" # Will need to change this if setting Istio revision to non-default value. 
+        cm.metadata.name == "istio" # Will need to change this if setting Istio revision to non-default value.
+        msg := "can't edit CM"
         # disallowList := input.parameters.meshConfigDisallowList
         # meshConfigField := split(cm.data, "\n")[_]
         # is_disallowed(meshConfigField, disallowList)
