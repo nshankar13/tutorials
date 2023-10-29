@@ -10,3 +10,8 @@ spec:
       - ""
       kinds:
       - Namespace
+  parameters:
+    requiredHosts:
+    - "istio-egress/*"
+    - "istio-system/*"
+    - "./*"

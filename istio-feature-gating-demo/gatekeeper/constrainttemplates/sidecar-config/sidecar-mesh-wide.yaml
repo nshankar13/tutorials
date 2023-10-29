@@ -16,6 +16,11 @@ spec:
             rootNamespace:
               description: Istio root namespace, default value is "istio-system" if not specified.
               type: string
+            requiredHosts:
+              description: Required egress hosts
+              items:
+                type: string
+              type: array
   targets:
   - target: admission.k8s.gatekeeper.sh
     rego: |-
@@ -24,7 +29,7 @@ spec:
       violation[{"msg": msg}] {
         root_ns := object.get(object.get(input, "parameters", {}), "rootNamespace", "istio-system")
         input.review.object.metadata.name == root_ns
-        req_hosts := ["./*", "istio-system/*", "istio-egress/*"]
+        req_hosts := input.parameters.requiredHosts
         req_host := req_hosts[_]
         not namespace_has_sidecar_cr_restriction(root_ns, req_host)
         msg := sprintf("Root namespace <%v> does not have a Sidecar to restrict sidecar egress traffic to host <%v>", [root_ns, req_host])
