@@ -15,5 +15,5 @@ spec:
       package istio.guardrails.featurestatus
 
       violation[{"msg": msg}] {
-        msg := sprintf("%v is experimental or alpha. Can only use beta or stable level APIs", [input.review.kind.kind])
+        msg := sprintf("%v is experimental or alpha. Can only use beta or stable level APIs.", [input.review.kind.kind])
       }
