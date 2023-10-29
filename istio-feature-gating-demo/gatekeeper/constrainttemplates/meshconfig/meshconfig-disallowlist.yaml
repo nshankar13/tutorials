@@ -27,7 +27,7 @@ spec:
         cm := input.review.object
         cm.metadata.name == "istio" # Will need to change this if setting Istio revision to non-default value.
         disallowList := input.parameters.meshConfigDisallowList
-        meshConfigFields := split(cm.data, "\n")
+        meshConfigField := split(cm.data, "\n")[_]
         is_disallowed(meshConfigField, disallowList)
         #msg := sprintf("MeshConfig field <%v> is disallowed - disallowed values are %v", [split(cm.data, "\n"), input.parameters.meshConfigDisallowList])
         msg := "can't edit CM"
