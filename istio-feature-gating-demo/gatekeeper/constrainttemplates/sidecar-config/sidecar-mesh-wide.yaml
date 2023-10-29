@@ -26,6 +26,8 @@ spec:
     rego: |-
       package istio.networking.sidecars
 
+      import future.keywords
+
       violation[{"msg": msg}] {
         root_ns := object.get(object.get(input, "parameters", {}), "rootNamespace", "istio-system")
         input.review.object.metadata.name == root_ns

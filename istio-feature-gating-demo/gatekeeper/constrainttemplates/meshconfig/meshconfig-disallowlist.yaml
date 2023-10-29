@@ -27,6 +27,8 @@ spec:
     rego: |
       package istio.guardrails.disallowedmeshconfigvalues
 
+      import future.keywords
+
       violation[{"msg": msg}] {
         cm := input.review.object
         cm.metadata.name == "istio" # Will need to change this if setting Istio revision to non-default value.

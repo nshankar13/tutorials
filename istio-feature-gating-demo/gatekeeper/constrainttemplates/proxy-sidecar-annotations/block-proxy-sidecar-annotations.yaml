@@ -23,6 +23,8 @@ spec:
     rego: |
       package istio.security.workloadpolicyannotations
 
+      import future.keywords
+
       disallowed_annotations := input.parameters.disallowedAnnotations
 
       violation[{"msg": msg}] {
