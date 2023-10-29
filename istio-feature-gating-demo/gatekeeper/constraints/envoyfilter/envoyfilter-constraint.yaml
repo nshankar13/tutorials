@@ -10,5 +10,5 @@ spec:
       - networking.istio.io
       kinds:
       - EnvoyFilter
-  parameter:
+  parameters:
     rateLimitEnvoyFilterType: "type.googleapis.com/envoy.extensions.filters.http.ratelimit.v3.RateLimit"
