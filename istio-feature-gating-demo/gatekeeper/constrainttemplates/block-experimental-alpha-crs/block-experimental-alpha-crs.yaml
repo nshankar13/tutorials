@@ -1,8 +1,8 @@
 apiVersion: templates.gatekeeper.sh/v1
-kind: BlockExperimentalAlphaCrs
+kind: ConstraintTemplate
 metadata:
   annotations:
-    description: Verify that only rate limiting EnvoyFilters are used. 
+    description: Block experimental and alpha custom resources.
   name: blockexperimentalalphacrs
 spec:
   crd:
