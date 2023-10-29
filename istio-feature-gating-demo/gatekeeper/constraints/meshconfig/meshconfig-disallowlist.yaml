@@ -1,7 +1,7 @@
 apiVersion: constraints.gatekeeper.sh/v1beta1
 kind: MeshConfigDisallow
 metadata:
-  name: meshconfig-disallowlist-constraint
+  name: meshconfig-disallow-constraint
 spec:
   enforcementAction: deny
   match:

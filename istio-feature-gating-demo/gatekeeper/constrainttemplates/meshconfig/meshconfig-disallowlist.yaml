@@ -3,7 +3,7 @@ kind: ConstraintTemplate
 metadata:
   annotations:
     description: Enforce that MeshConfig and ProxyConfig values are ones that aren't in the disallowlist. 
-  name: meshconfigdisallowlist
+  name: meshconfigdisallow
 spec:
   crd:
     spec:
