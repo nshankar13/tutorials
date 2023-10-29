@@ -16,7 +16,6 @@ spec:
             rateLimitEnvoyFilterType:
               description: String for the EnvoyFilter rate limit type. 
               type: string
-
   - target: admission.k8s.gatekeeper.sh
     rego: |-
       package istio.networking.envoyfilter
