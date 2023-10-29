@@ -29,7 +29,7 @@ spec:
         disallowList := input.parameters.meshConfigDisallowList
         meshConfigField := split(cm.data, "\n")[_]
         is_disallowed(meshConfigField, disallowList)
-        msg := sprintf("MeshConfig field <%v> is disallowed - disallowed values are %v", [meshConfigField, disallowlist])
+        msg := sprintf("MeshConfig field <%v> is disallowed - disallowed values are %v", [meshConfigField, disallowList])
       }
 
       is_disallowed(field, disallowList) {
