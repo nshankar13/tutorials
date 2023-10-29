@@ -25,9 +25,9 @@ spec:
 
       violation[{"msg": msg}] {
         is_envoyfilter(input.review.kind)
-        filterType := spec.configPatches[_].patch.value.types_config["@type"]
-        filterType != input.parameters.rateLimitEnvoyFilterType
-        msg := "Cannot use broad host definition \"*\" in Sidecar egress configuration."
+        filterType := spec.configPatches[_].patch.value.typed_config
+        # filterType != input.parameters.rateLimitEnvoyFilterType
+        msg := sprintf("Cannot use EnvoyFilter. Filter type: %v, allowed type: %v", [filterType, input.parameters.rateLimitEnvoyFilterType])
       }
 
       is_envoyfilter(kind) {
