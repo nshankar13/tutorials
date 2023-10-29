@@ -28,7 +28,8 @@ spec:
         # This field is required.
         # To trace multiple users, feel free to pass in a list.
         # To trace controllers, use the service accounts of those controllers.
-      - kind:
+      - users: "admin"
+        kind:
           # The group, version, kind for which we want to run a trace
           group: ""
           version: "v1"
