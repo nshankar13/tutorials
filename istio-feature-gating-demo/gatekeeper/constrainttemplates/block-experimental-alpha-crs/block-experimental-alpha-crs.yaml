@@ -1,5 +1,5 @@
 apiVersion: templates.gatekeeper.sh/v1
-kind: BlockExperimentlAlphaCrs
+kind: BlockExperimentalAlphaCrs
 metadata:
   annotations:
     description: Verify that only rate limiting EnvoyFilters are used. 
