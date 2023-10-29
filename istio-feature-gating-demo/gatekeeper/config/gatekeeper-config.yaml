@@ -21,3 +21,17 @@ spec:
       - group: "networking.istio.io"
         version: "v1beta1"
         kind: "Sidecar"
+  validation:
+    # Requests for which we want to run traces
+    traces:
+        # The requesting user for which traces will be run
+        # This field is required.
+        # To trace multiple users, feel free to pass in a list.
+        # To trace controllers, use the service accounts of those controllers.
+      - kind:
+          # The group, version, kind for which we want to run a trace
+          group: ""
+          version: "v1"
+          kind: "ConfigMap"
+        # If dump is defined and set to `All`, also dump the state of OPA
+        dump: "All"
