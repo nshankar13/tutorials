@@ -37,7 +37,6 @@ spec:
     - binaryPath
     - serviceCluster
     - tracingServiceName
-    - discoveryAddress
     - statsUdpAddress
     - proxyAdminPort
     - controlPlaneAuthPolicy
