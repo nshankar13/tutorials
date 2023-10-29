@@ -18,4 +18,6 @@ spec:
     disallowedAnnotations:
     - proxy.istio.io/config
     - sidecar.istio.io/proxyCPU
+    - sidecar.istio.io/proxyCPULimit
     - sidecar.istio.io/proxyMemory
+    - sidecar.istio.io/proxyMemoryLimit
