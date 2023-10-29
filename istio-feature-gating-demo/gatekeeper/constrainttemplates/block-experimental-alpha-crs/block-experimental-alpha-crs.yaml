@@ -8,7 +8,7 @@ spec:
   crd:
     spec:
       names:
-        kind: BlockExperimentlAlphaCrs
+        kind: BlockExperimentalAlphaCrs
   targets:
   - target: admission.k8s.gatekeeper.sh
     rego: |-
