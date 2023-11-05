@@ -1,5 +1,5 @@
 apiVersion: constraints.gatekeeper.sh/v1beta1
-kind: BlockWildcardHostNames
+kind: BlockWildcardHostnames
 metadata:
   name: block-wildcard-hostnames
 spec:
