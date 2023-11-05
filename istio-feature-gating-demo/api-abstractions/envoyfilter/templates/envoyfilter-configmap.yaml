@@ -1,0 +1,18 @@
+# From https://istio.io/latest/docs/tasks/policy-enforcement/rate-limit
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: ratelimit-config
+data:
+  config.yaml: |
+    domain: {{ .Values.domain }}
+    descriptors:
+    {{- range $descriptor := .Values.paths }}
+      - key: PATH
+        {{- if $descriptor.pathName }}
+        value: {{ $descriptor.pathName }}
+        {{- end }}
+        rate_limit:
+          unit: {{ $descriptor.rateLimitUnit }}
+          requests_per_unit: {{ $descriptor.requestsPerUnit }}
+    {{- end }}

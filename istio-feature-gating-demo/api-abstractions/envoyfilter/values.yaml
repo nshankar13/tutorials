@@ -1,0 +1,24 @@
+# From: https://istio.io/latest/docs/tasks/policy-enforcement/rate-limit 
+ingressNamespace: istio-ingress
+ingressSelector:
+  istio: ingressgateway
+domain: productpage-ratelimit
+timeout: 10s
+rateLimitService:
+  # Based on: https://raw.githubusercontent.com/istio/istio/release-1.19/samples/ratelimit/rate-limit-service.yaml
+  serviceName: ratelimit
+  serviceNamespace: default
+  port: "8081"
+failureModeDeny: true
+paths:
+  - pathName: "/productpage"
+    rateLimitUnit: minute
+    requestsPerUnit: 1
+  - rateLimitUnit: minute
+    requestsPerUnit: 100
+routeConfig:
+  vhost: ""
+  routeAction: ANY
+  requestHeaders:
+    - headerName: ":path"
+      descriptorKey: "PATH"

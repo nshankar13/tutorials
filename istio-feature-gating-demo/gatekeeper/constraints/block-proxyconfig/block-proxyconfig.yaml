@@ -1,0 +1,12 @@
+apiVersion: constraints.gatekeeper.sh/v1beta1
+kind: BlockProxyconfig
+metadata:
+  name: block-proxyconfig
+spec:
+  enforcementAction: deny
+  match:
+    kinds:
+    - apiGroups:
+      - networking.istio.io
+      kinds:
+      - ProxyConfig

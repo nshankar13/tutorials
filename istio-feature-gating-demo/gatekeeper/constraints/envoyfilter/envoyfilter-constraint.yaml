@@ -11,4 +11,4 @@ spec:
       kinds:
       - EnvoyFilter
   parameters:
-    rateLimitEnvoyFilterType: "type.googleapis.com/envoy.extensions.filters.http.ratelimit.v3.RateLimit"
+    rateLimitGlobalEnvoyFilterType: "type.googleapis.com/envoy.extensions.filters.http.ratelimit.v3.RateLimit"

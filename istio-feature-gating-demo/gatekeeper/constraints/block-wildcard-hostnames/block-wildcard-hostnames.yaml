@@ -1,0 +1,16 @@
+apiVersion: constraints.gatekeeper.sh/v1beta1
+kind: BlockWildcardHostNames
+metadata:
+  name: block-wildcard-hostnames
+spec:
+  enforcementAction: deny
+  match:
+    kinds:
+    - apiGroups:
+      - networking.istio.io
+      kinds:
+      - Gateway
+    - apiGroups:
+      - networking.istio.io
+      kinds:
+      - VirtualService

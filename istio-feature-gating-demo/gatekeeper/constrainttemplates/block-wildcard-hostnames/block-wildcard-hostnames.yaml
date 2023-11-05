@@ -1,0 +1,41 @@
+apiVersion: templates.gatekeeper.sh/v1
+kind: ConstraintTemplate
+metadata:
+  annotations:
+    description: Block wildcard hostnames in VirtualServices and Gateways
+  name: blockwildcardhostnames
+spec:
+  crd:
+    spec:
+      names:
+        kind: BlockWildcardHostnames
+  targets:
+  - target: admission.k8s.gatekeeper.sh
+    rego: |-
+      package istio.guardrails.wildcardhostnames
+
+      spec = input.review.object.spec
+
+      violation[{"msg": msg}] {
+        is_gateway(input.review.kind)
+        host := spec.servers[_].hosts[_]
+        host == "*"
+        msg := "Cannot use broad host definition \"*\" in Gateway host configuration."
+      }
+
+      violation[{"msg": msg}] {
+        is_virtualservice(input.review.kind)
+        host := spec.hosts[_]
+        host == "*"
+        msg := "Cannot use broad host definition \"*\" in VirtualService host configuration."
+      }
+
+      is_gateway(kind) {
+          kind.kind == "Gateway"
+          kind.group == "networking.istio.io"
+      }
+
+      is_virtualservice(kind) {
+          kind.kind == "VirtualService"
+          kind.group == "networking.istio.io"
+      }

@@ -13,7 +13,7 @@ spec:
         openAPIV3Schema:
           type: object
           properties:
-            rateLimitEnvoyFilterType:
+            rateLimitGlobalEnvoyFilterType:
               description: String for the EnvoyFilter rate limit type. 
               type: string
   targets:
@@ -27,8 +27,8 @@ spec:
         is_envoyfilter(input.review.kind)
         filterType := spec.configPatches[_].patch.value.typed_config["@type"]
         filterType != ""
-        filterType != input.parameters.rateLimitEnvoyFilterType
-        msg := sprintf("Cannot use EnvoyFilter of filter type: %v, only allowed type is %v", [filterType, input.parameters.rateLimitEnvoyFilterType])
+        filterType != input.parameters.rateLimitGlobalEnvoyFilterType
+        msg := sprintf("Cannot use EnvoyFilter of filter type: %v, only allowed type is %v", [filterType, input.parameters.rateLimitGlobalEnvoyFilterType])
       }
 
       is_envoyfilter(kind) {

@@ -1,0 +1,41 @@
+# From: https://istio.io/latest/docs/tasks/policy-enforcement/rate-limit
+apiVersion: networking.istio.io/v1alpha3
+kind: EnvoyFilter
+metadata:
+  name: filter-ratelimit
+  namespace: {{ .Values.ingressNamespace }}
+spec:
+  workloadSelector:
+    # select by label in the same namespace
+    labels:
+    {{- range $key, $val := .Values.ingressSelector }}
+      {{ $key }}: {{ $val }}
+    {{- end }}
+  configPatches:
+    # The Envoy config you want to modify
+    - applyTo: HTTP_FILTER
+      match:
+        context: GATEWAY
+        listener:
+          filterChain:
+            filter:
+              name: "envoy.filters.network.http_connection_manager"
+              subFilter:
+                name: "envoy.filters.http.router"
+      patch:
+        operation: INSERT_BEFORE
+        # Adds the Envoy Rate Limit Filter in HTTP filter chain.
+        value:
+          name: envoy.filters.http.ratelimit
+          typed_config:
+            "@type": type.googleapis.com/envoy.extensions.filters.http.ratelimit.v3.RateLimit
+            # domain can be anything! Match it to the ratelimter service config
+            domain: {{ .Values.domain }}
+            failure_mode_deny: {{ .Values.failureModeDeny }}
+            timeout: {{ .Values.timeout }}
+            rate_limit_service: # based on: https://raw.githubusercontent.com/istio/istio/release-1.19/samples/ratelimit/rate-limit-service.yaml
+              grpc_service:
+                envoy_grpc:
+                  cluster_name: {{ printf "outbound|%s||%s.%s.svc.cluster.local" .Values.rateLimitService.port .Values.rateLimitService.serviceName .Values.rateLimitService.serviceNamespace }}
+                  authority: {{ printf "%s.%s.svc.cluster.local" .Values.rateLimitService.serviceName .Values.rateLimitService.serviceNamespace }}
+              transport_api_version: V3
