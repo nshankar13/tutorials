@@ -9,7 +9,7 @@ spec:
   rules:
   - from:
     - source:
-        namespaces: ["test-egress"]
+        namespaces: ["default"]
     to:
     - operation:
         hosts: ["edition.cnn.com"]
