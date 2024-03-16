@@ -58,6 +58,7 @@ FWPRIVATE_IP=$(az network firewall show -g $RG -n $FWNAME --query "ipConfigurati
 # az network firewall application-rule create  --firewall-name $FWNAME --collection-name "dockerhub" --name "allow network" --protocols http=80 https=443 --source-addresses "*" --resource-group $RG --action "Allow" --target-fqdns "*auth.docker.io" "*cloudflare.docker.io" "*cloudflare.docker.com" "*registry-1.docker.io" --priority 200
 # az network firewall application-rule create  --firewall-name $FWNAME --collection-name "quayAndGhcr" --name "allow network" --protocols http=80 https=443 --source-addresses "*" --resource-group $RG --action "Allow" --target-fqdns "*quay.io" "*ghcr.io" --priority 210
 # az network firewall application-rule create  --firewall-name $FWNAME --collection-name "github" --name "allow network" --protocols http=80 https=443 --source-addresses "*" --resource-group $RG --action "Allow" --target-fqdns "*github.com" "*github.io" --priority 220
+# az network firewall application-rule create  --firewall-name $FWNAME --collection-name "googleapis" --name "allow network" --protocols http=80 https=443 --source-addresses "*" --resource-group $RG --action "Allow" --target-fqdns "*storage.googleapis.com" --priority 230
 
 # # See this for all outbound firewall rules that need to be configured for different AKS Add-Ons: https://learn.microsoft.com/en-us/azure/aks/outbound-rules-control-egress 
 

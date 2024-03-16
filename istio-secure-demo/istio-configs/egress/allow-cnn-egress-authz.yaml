@@ -1,0 +1,15 @@
+apiVersion: security.istio.io/v1beta1
+kind: AuthorizationPolicy
+metadata:
+  name: allow-cnn-egress
+  namespace: istio-egress
+spec:
+  # allow-list for the identities that can call the host
+  action: ALLOW
+  rules:
+  - from:
+    - source:
+        namespaces: ["test-egress"]
+    to:
+    - operation:
+        hosts: ["edition.cnn.com"]

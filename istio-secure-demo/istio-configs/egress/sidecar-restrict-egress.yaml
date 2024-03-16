@@ -9,3 +9,4 @@ spec:
     - "./*"
     - "istio-system/*"
     - "istio-egress/*"
+    - "*/edition.cnn.com"

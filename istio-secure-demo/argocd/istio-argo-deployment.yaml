@@ -36,22 +36,44 @@ spec:
     targetRevision: 1.21.0
     helm:
       parameters:
-      - name: "replicaCount"
-        value: "2"
-      - name: "resources.requests.cpu"
+      - name: "pilot.resources.requests.cpu"
         value: 500m
-      - name: "resources.requests.memory"
+      - name: "pilot.resources.requests.memory"
         value: 2048Mi
       - name: "meshConfig.outboundTrafficPolicy.mode"
         value: REGISTRY_ONLY
       - name: "meshConfig.accessLogFile"
         value: /dev/stdout
-      - name: "cni.enabled"
+      - name: "pilot.istio_cni.enabled"
         value: "true"
-      - name: "hub"
+      - name: "pilot.hub"
         value: mcr.microsoft.com/oss/istio
-      - name: "variant"
+      - name: "pilot.variant"
         value: distroless
+      - name: "global.hub"
+        value: mcr.microsoft.com/oss/istio
+      - name: "global.variant"
+        value: distroless
+---
+apiVersion: argoproj.io/v1alpha1
+kind: Application
+metadata:
+  name: istio-cni
+  namespace: argocd
+  finalizers:
+  - resources-finalizer.argocd.argoproj.io
+spec:
+  destination:
+    server: https://kubernetes.default.svc
+    namespace: kube-system
+  project: default
+  source:
+    chart: cni
+    repoURL: https://istio-release.storage.googleapis.com/charts
+    targetRevision: 1.21.0
+  syncPolicy:
+    syncOptions:
+      - CreateNamespace=true
 ---
 apiVersion: argoproj.io/v1alpha1
 kind: Application
@@ -91,8 +113,20 @@ spec:
     targetRevision: 1.21.0
     helm:
       parameters:
+        - name: "name"
+          value: istio-egressgateway
         - name: "service.type"
           value: ClusterIP
+        - name: "nodeSelector.egress"
+          value: enabled
+        - name: "tolerations[0].key"
+          value: "egress"
+        - name: "tolerations[0].operator"
+          value: "Equal"
+        - name: "tolerations[0].value"
+          value: "enabled"
+        - name: "tolerations[0].effect"
+          value: "NoSchedule"
   syncPolicy:
     syncOptions:
       - CreateNamespace=true
