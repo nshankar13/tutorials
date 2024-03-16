@@ -8,7 +8,7 @@ metadata:
 spec:
   destination:
     server: https://kubernetes.default.svc
-    namespace: gatekeeper-system
+    namespace: default
   project: default
   source:
     repoURL: https://github.com/nshankar13/tutorials.git
