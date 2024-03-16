@@ -12,7 +12,7 @@ spec:
   project: default
   source:
     repoURL: https://github.com/nshankar13/tutorials.git
-    path: istio-feature-gating-demo/gatekeeper/constrainttemplates
+    path: istio-secure-demo/gatekeeper/constrainttemplates
     directory:
       recurse: true
   syncPolicy:
