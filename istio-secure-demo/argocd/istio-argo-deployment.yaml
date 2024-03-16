@@ -12,7 +12,7 @@ spec:
   project: default
   source:
     chart: base
-    repoURL: https://istio-release.storage.googleapis.com/charts
+    repoURL: mcr.microsoft.com/oss/helmchart/istio
     targetRevision: 1.21.0
   syncPolicy:
     syncOptions:
@@ -32,7 +32,7 @@ spec:
   project: default
   source:
     chart: istiod
-    repoURL: https://istio-release.storage.googleapis.com/charts
+    repoURL: mcr.microsoft.com/oss/helmchart/istio
     targetRevision: 1.21.0
     helm:
       parameters:
@@ -47,7 +47,7 @@ spec:
       - name: "meshConfig.accessLogFile"
         value: /dev/stdout
       - name: "cni.enabled"
-        value: true
+        value: "true"
       - name: "hub"
         value: mcr.microsoft.com/oss/istio
       - name: "variant"
@@ -67,7 +67,7 @@ spec:
   project: default
   source:
     chart: gateway
-    repoURL: https://istio-release.storage.googleapis.com/charts
+    repoURL: mcr.microsoft.com/oss/helmchart/istio
     targetRevision: 1.21.0
   syncPolicy:
     syncOptions:
@@ -87,7 +87,7 @@ spec:
   project: default
   source:
     chart: gateway
-    repoURL: https://istio-release.storage.googleapis.com/charts
+    repoURL: mcr.microsoft.com/oss/helmchart/istio
     targetRevision: 1.21.0
     helm:
       parameters:

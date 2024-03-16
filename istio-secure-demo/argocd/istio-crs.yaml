@@ -12,7 +12,7 @@ spec:
   project: default
   source:
     repoURL: https://github.com/nshankar13/tutorials.git
-    path: istio-secure-demo/istio-crs
+    path: istio-secure-demo/istio-configs
     directory:
       recurse: true
   syncPolicy:
