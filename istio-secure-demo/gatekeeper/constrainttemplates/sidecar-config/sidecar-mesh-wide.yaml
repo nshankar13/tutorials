@@ -1,0 +1,43 @@
+apiVersion: templates.gatekeeper.sh/v1
+kind: ConstraintTemplate
+metadata:
+  annotations:
+    description: Enforce that there's a default sidecar CR to restrict the scope of egress traffic. 
+  name: meshsidecarhosts
+spec:
+  crd:
+    spec:
+      names:
+        kind: MeshSidecarHosts
+      validation:
+        openAPIV3Schema:
+          type: object
+          properties:
+            rootNamespace:
+              description: Istio root namespace, default value is "istio-system" if not specified.
+              type: string
+            requiredHosts:
+              description: Required egress hosts
+              items:
+                type: string
+              type: array
+  targets:
+  - target: admission.k8s.gatekeeper.sh
+    rego: |-
+      package istio.networking.sidecars
+
+      import future.keywords
+
+      violation[{"msg": msg}] {
+        root_ns := object.get(object.get(input, "parameters", {}), "rootNamespace", "istio-system")
+        input.review.object.metadata.name == root_ns
+        req_hosts := input.parameters.requiredHosts
+        req_host := req_hosts[_]
+        not namespace_has_sidecar_cr_restriction(root_ns, req_host)
+        msg := sprintf("Root namespace <%v> does not have a Sidecar to restrict sidecar egress traffic to host <%v>", [root_ns, req_host])
+      }
+
+      namespace_has_sidecar_cr_restriction(ns, hostName) {
+        sc := data.inventory.namespace[ns][_].Sidecar[_]
+        hostName in sc.spec.egress[_].hosts
+      }

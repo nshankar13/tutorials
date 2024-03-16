@@ -1,0 +1,98 @@
+apiVersion: argoproj.io/v1alpha1
+kind: Application
+metadata:
+  name: istio-base
+  namespace: argocd
+  finalizers:
+  - resources-finalizer.argocd.argoproj.io
+spec:
+  destination:
+    server: https://kubernetes.default.svc
+    namespace: istio-system
+  project: default
+  source:
+    chart: base
+    repoURL: https://istio-release.storage.googleapis.com/charts
+    targetRevision: 1.21.0
+  syncPolicy:
+    syncOptions:
+      - CreateNamespace=true
+---
+apiVersion: argoproj.io/v1alpha1
+kind: Application
+metadata:
+  name: istiod
+  namespace: argocd
+  finalizers:
+  - resources-finalizer.argocd.argoproj.io
+spec:
+  destination:
+    server: https://kubernetes.default.svc
+    namespace: istio-system
+  project: default
+  source:
+    chart: istiod
+    repoURL: https://istio-release.storage.googleapis.com/charts
+    targetRevision: 1.21.0
+    helm:
+      parameters:
+      - name: "replicaCount"
+        value: "2"
+      - name: "resources.requests.cpu"
+        value: 500m
+      - name: "resources.requests.memory"
+        value: 2048Mi
+      - name: "meshConfig.outboundTrafficPolicy.mode"
+        value: REGISTRY_ONLY
+      - name: "meshConfig.accessLogFile"
+        value: /dev/stdout
+      - name: "cni.enabled"
+        value: true
+      - name: "hub"
+        value: mcr.microsoft.com/oss/istio
+      - name: "variant"
+        value: distroless
+---
+apiVersion: argoproj.io/v1alpha1
+kind: Application
+metadata:
+  name: istio-ingress
+  namespace: argocd
+  finalizers:
+  - resources-finalizer.argocd.argoproj.io
+spec:
+  destination:
+    server: https://kubernetes.default.svc
+    namespace: istio-ingress
+  project: default
+  source:
+    chart: gateway
+    repoURL: https://istio-release.storage.googleapis.com/charts
+    targetRevision: 1.21.0
+  syncPolicy:
+    syncOptions:
+      - CreateNamespace=true
+---
+apiVersion: argoproj.io/v1alpha1
+kind: Application
+metadata:
+  name: istio-egress
+  namespace: argocd
+  finalizers:
+  - resources-finalizer.argocd.argoproj.io
+spec:
+  destination:
+    server: https://kubernetes.default.svc
+    namespace: istio-egress
+  project: default
+  source:
+    chart: gateway
+    repoURL: https://istio-release.storage.googleapis.com/charts
+    targetRevision: 1.21.0
+    helm:
+      parameters:
+        - name: "service.type"
+          value: ClusterIP
+  syncPolicy:
+    syncOptions:
+      - CreateNamespace=true

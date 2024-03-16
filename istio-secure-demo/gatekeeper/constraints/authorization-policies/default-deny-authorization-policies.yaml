@@ -1,0 +1,13 @@
+# Source: https://github.com/mathieu-benoit/istio-gatekeeper-demos
+apiVersion: constraints.gatekeeper.sh/v1beta1
+kind: AuthzPolicyDefaultDeny
+metadata:
+  name: default-deny-authorization-policies
+spec:
+  enforcementAction: dryrun
+  match:
+    kinds:
+    - apiGroups:
+      - ""
+      kinds:
+      - Namespace

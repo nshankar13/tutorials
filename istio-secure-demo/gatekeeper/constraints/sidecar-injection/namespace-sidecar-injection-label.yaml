@@ -1,0 +1,27 @@
+# Source: https://github.com/mathieu-benoit/istio-gatekeeper-demos
+apiVersion: constraints.gatekeeper.sh/v1beta1
+kind: K8sRequiredLabels
+metadata:
+  name: namespace-sidecar-injection-label
+spec:
+  enforcementAction: deny
+  match:
+    kinds:
+    - apiGroups:
+      - ""
+      kinds:
+      - Namespace
+    excludedNamespaces:
+    - default
+    - gatekeeper-system
+    - istio-system
+    - istio-ingress
+    - istio-egress
+    - kube-system
+    - kube-public
+    - kube-node-lease
+    - argocd
+  parameters:
+    labels:
+    - key: istio-injection
+      allowedRegex: enabled

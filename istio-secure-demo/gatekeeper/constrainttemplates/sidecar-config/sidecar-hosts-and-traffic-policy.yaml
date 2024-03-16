@@ -1,0 +1,36 @@
+apiVersion: templates.gatekeeper.sh/v1
+kind: ConstraintTemplate
+metadata:
+  annotations:
+    description: Verify sidecar egress hosts and traffic policy mode
+  name: sidecarhostsandtrafficpolicy
+spec:
+  crd:
+    spec:
+      names:
+        kind: SidecarHostsAndTrafficPolicy
+  targets:
+  - target: admission.k8s.gatekeeper.sh
+    rego: |-
+      package istio.networking.sidecars
+
+      spec = input.review.object.spec
+
+      violation[{"msg": msg}] {
+        is_sidecar(input.review.kind)
+        host := spec.egress[_].hosts[_]
+        host == "*"
+        msg := "Cannot use broad host definition \"*\" in Sidecar egress configuration."
+      }
+
+      violation[{"msg": msg}] {
+        is_sidecar(input.review.kind)
+        outboundTPMode := spec.outboundTrafficPolicy.mode
+        outboundTPMode != "REGISTRY_ONLY"
+        msg := "Outbound traffic policy mode can only be set to \"REGISTRY_ONLY\" in Sidecar configuration."
+      }
+
+      is_sidecar(kind) {
+          kind.kind == "Sidecar"
+          kind.group == "networking.istio.io"
+      }

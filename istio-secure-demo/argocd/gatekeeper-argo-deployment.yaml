@@ -1,0 +1,25 @@
+apiVersion: argoproj.io/v1alpha1
+kind: Application
+metadata:
+  name: gatekeeper
+  namespace: argocd
+  finalizers:
+  - resources-finalizer.argocd.argoproj.io
+spec:
+  destination:
+    server: https://kubernetes.default.svc
+    namespace: gatekeeper-system
+  project: default
+  source:
+    chart: gatekeeper
+    repoURL: https://open-policy-agent.github.io/gatekeeper/charts
+    targetRevision: v3.15.1
+    helm:
+      parameters:
+      - name: "image.repository"
+        value: "mcr.microsoft.com/oss/open-policy-agent/gatekeeper"
+      - name: "image.crdRepository"
+        value: "mcr.microsoft.com/oss/open-policy-agent/gatekeeper-crds"
+  syncPolicy:
+    syncOptions:
+      - CreateNamespace=true

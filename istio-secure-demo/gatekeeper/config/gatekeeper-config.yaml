@@ -1,0 +1,41 @@
+apiVersion: config.gatekeeper.sh/v1alpha1
+kind: Config
+metadata:
+  name: config
+  namespace: gatekeeper-system
+spec:
+  sync:
+    syncOnly:
+      - group: ""
+        version: "v1"
+        kind: "Namespace"
+      - group: ""
+        version: "v1"
+        kind: "ConfigMap"
+      - group: "networking.istio.io"
+        version: "v1beta1"
+        kind: "VirtualService"
+      - group: "networking.istio.io"
+        version: "v1beta1"
+        kind: "Gateway"
+      - group: "networking.istio.io"
+        version: "v1beta1"
+        kind: "ProxyConfig"
+      - group: "security.istio.io"
+        version: "v1beta1"
+        kind: "PeerAuthentication"
+      - group: "security.istio.io"
+        version: "v1beta1"
+        kind: "AuthorizationPolicy"
+      - group: "networking.istio.io"
+        version: "v1beta1"
+        kind: "Sidecar"
+      - group: "networking.istio.io"
+        version: "v1alpha3"
+        kind: "EnvoyFilter"
+      - group: "extensions.istio.io"
+        version: "v1alpha1"
+        kind: "WasmPlugin"
+      - group: "telemetry.istio.io"
+        version: "v1alpha1"
+        kind: "Telemetry"
