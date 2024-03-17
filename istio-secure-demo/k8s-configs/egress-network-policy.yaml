@@ -6,6 +6,7 @@ spec:
   podSelector: {}
   policyTypes:
   - Egress
+  - Ingress
   egress:
   - to:
     - namespaceSelector:
@@ -19,3 +20,12 @@ spec:
         matchLabels:
           istio: system # Add labels to istio-system and istio-egress namespaces
           istio: egress
+          ns: default
+  ingress:
+  - from:
+    - namespaceSelector:
+        matchLabels:
+          istio: system # Add labels to istio-system and istio-egress namespaces
+          istio: ingress
+          ns: default
+

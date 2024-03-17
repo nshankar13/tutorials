@@ -2,7 +2,7 @@ apiVersion: networking.istio.io/v1alpha3
 kind: Sidecar
 metadata:
   name: sidecar-restrict-egress
-  namespace: istio-system # Needs to be deployed in rootNamespace as defined in MeshConfig
+  namespace: default
 spec:
   egress:
   - hosts:

@@ -1,0 +1,40 @@
+apiVersion: networking.istio.io/v1alpha3
+kind: Gateway
+metadata:
+  name: httpbin-gateway
+  namespace: foo
+spec:
+  # The selector matches the ingress gateway pod labels.
+  # If you installed Istio using Helm following the standard documentation, this would be "istio=ingress"
+  selector:
+    istio: ingress
+  servers:
+  - port:
+      number: 80
+      name: http
+      protocol: HTTP
+    hosts:
+    - "httpbin.example.com"
+---
+apiVersion: networking.istio.io/v1alpha3
+kind: VirtualService
+metadata:
+  name: httpbin
+  namespace: foo
+spec:
+  hosts:
+  - "httpbin.example.com"
+  gateways:
+  - httpbin-gateway
+  http:
+  - match:
+    - uri:
+        prefix: /headers
+      headers:
+        "@request.auth.claims.groups":
+          exact: group1
+    route:
+    - destination:
+        port:
+          number: 8000
+        host: httpbin
