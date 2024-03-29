@@ -5,4 +5,4 @@ metadata:
   namespace: foo
 spec:
   mtls:
-    mode: PERMISSIZE
+    mode: PERMISSIVE
